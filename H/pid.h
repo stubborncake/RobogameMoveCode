@@ -1,22 +1,24 @@
 #ifndef PID_H
 #define PID_H
-//PIDÄ£Ê½
+/*-----------------------------------typedefines export---------------------------------------*/
+e
+//PIDæ¨¡å¼enum
 enum PID_MODE
 {
   PID_POSITION = 0,
   PID_DELTA
 };
- //PIDÖ¸Õë¶¨Òå
+ //PIDæŒ‡é’ˆå®šä¹‰
 typedef struct
 {
-  int mode;//1ÎªÎ»ÖÃPID£¬2ÎªÔöÁ¿PID
-  //PID Èı²ÎÊı
+  int mode;//1ä¸ºä½ç½®PIDï¼Œ2ä¸ºå¢é‡PID
+  //PID ä¸‰å‚æ•°
   float Kp;
   float Ki;
   float Kd;
  
-  int max_out;  //×î´óÊä³ö
-  int max_iout; //×î´ó»ı·ÖÊä³ö
+  int max_out;  //æœ€å¤§è¾“å‡º
+  int max_iout; //æœ€å¤§ç§¯åˆ†è¾“å‡º
  
   int set;
   int fdb;
@@ -25,13 +27,13 @@ typedef struct
   int Pout;
 	int Iout;
   int Dout;
-  int Dbuf[3];  //Î¢·ÖÏî 0×îĞÂ 1ÉÏÒ»´Î 2ÉÏÉÏ´Î
-  int error[3]; //Îó²îÏî 0×îĞÂ 1ÉÏÒ»´Î 2ÉÏÉÏ´Î
+  int Dbuf[3];  //å¾®åˆ†é¡¹ 0æœ€æ–° 1ä¸Šä¸€æ¬¡ 2ä¸Šä¸Šæ¬¡
+  int error[3]; //è¯¯å·®é¡¹ 0æœ€æ–° 1ä¸Šä¸€æ¬¡ 2ä¸Šä¸Šæ¬¡
  
 } pid_type_def;
- 
-extern void PID_init(pid_type_def *pid, int mode,  int max_out, int max_iout,float Kp,float Ki,float Kd);//PID³õÊ¼»¯
-extern int PID_calc(pid_type_def *pid, int ref, int set);//PID¼ÆËã
-extern void PID_clear(pid_type_def *pid);//PIDÇå³ı
+ /*-----------------------------------functions export prototypes---------------------------------------*/
+extern void PID_init(pid_type_def *pid, int mode,  int max_out, int max_iout,float Kp,float Ki,float Kd);//PIDåˆå§‹åŒ–
+extern int PID_calc(pid_type_def *pid, int ref, int set);//PIDè®¡ç®—
+extern void PID_clear(pid_type_def *pid);//PIDæ¸…é™¤
  
 #endif
