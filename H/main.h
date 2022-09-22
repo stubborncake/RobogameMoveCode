@@ -111,7 +111,7 @@ typedef enum{
 /* USER CODE BEGIN EC */
 
 
-extern int target1,target2,target3,target4;
+extern int target1,target2,target3,target4;//分别代表四个轮子的目标速度
 
 extern TIM_HandleTypeDef htim1;
 extern TIM_HandleTypeDef htim2;
