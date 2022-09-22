@@ -24,7 +24,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "stdio.h"
+#include "pid.h"
 #include "connectivity.h"
+#include "motor.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -78,8 +80,6 @@ void USART2_IdleCallback__(uint8_t *receiveBuff,uint8_t resBuffPtr)
 	newmsg.argList=&receiveBuff[2];	
 	receiveCmd(newmsg);	
 }
-
-
 
 /* USER CODE END EV */
 
@@ -258,10 +258,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	{
 		static int time;
 		time++;		
-		static int pwm1=0;
-		static int pwm2=0;
-		static int pwm3=0;
-		static int pwm4=0;
+		static int pwm1=0,pwm2=0,pwm3=0,pwm4=0;
 		static float enc1=0,enc2=0,enc3=0,enc4=0;
 		static float testnumber[2];
 		static int enc;
@@ -311,8 +308,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			{
 				enc1=enc2=enc3=enc4=0;
 				Again=0;
-			}
-			
+			}			
 			enc=Read_Encoder(1);
 			if(enc<0) enc=-enc;
       enc1 = enc1 + enc;

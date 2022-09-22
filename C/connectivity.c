@@ -1,6 +1,7 @@
 #include "main.h"
 #include "connectivity.h"
 #include "usart.h"
+#include "motor.h"
 
 inline HAL_StatusTypeDef sendCommand(message_t newMsg)
 {
@@ -41,53 +42,17 @@ inline void receiveCmd(message_t newMsg)
   break;
 		
 	case trimCmd:
-			//Turn Left a Little	
-		if(newMsg.argList[0]==3)
-		{
-			FrontMove();
-			target1=target2=60;
-			target3=target4=100;
-		}		
-		//Turn Right a Little
-		if(newMsg.argList[0]==1)
-		{
-			FrontMove();
-			target1=target2=100;
-			target3=target4=60;
-		}
-		//Return Front
-		if(newMsg.argList[0]==0)
-		{
-			FrontMove();
-			target1=target2=target3=target4=100;
-		}		
 	break;
 				
 	case moveCmd:		
-		FrontMove();
-		target1=target2=target3=target4=100*newMsg.argList[1]/255;
 	break;
 	
 	case rotateCmd:
-		if(newMsg.argList[0]==1)
-		{	
-			RightRotate();			
-			target1=target2=target3=target4=50;
-		}
-		if(newMsg.argList[0]==3)
-		{	
-			LeftRotate();
-			target1=target2=target3=target4=50;			
-		}
 	break;	
 		
 	case stopCmd:
-			SetFourPWM(0,0,0,0);
-			target1=target2=target3=target4=0;
-			StopMove();
 	break;	
 	
-	//‘≠µÿœÚ”“
 	case reservedCmd:
 	break;
 

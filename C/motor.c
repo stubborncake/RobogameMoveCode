@@ -1,4 +1,5 @@
 #include "motor.h"
+#include "connectivity.h"
 //¶ÁÈ¡±àÂëÆ÷µÄÖµ
 int Read_Encoder(int TIMX)
 {		
@@ -151,3 +152,65 @@ __HAL_TIM_SetCompare(&htim4,TIM_CHANNEL_2,b);
 __HAL_TIM_SetCompare(&htim4,TIM_CHANNEL_3,c);
 __HAL_TIM_SetCompare(&htim4,TIM_CHANNEL_4,d);	
 }	
+void SetTarget(int a,int b,int c,int d)
+{
+	target1=a;
+	target2=b;
+	target3=c;
+	target4=d;
+}
+void Move(direction_t newdir,uint16_t newspeed)
+{
+	if(newdir==goFront)
+		{
+			FrontMove();
+			SetTarget(newspeed*100/255,newspeed*100/255,newspeed*100/255,newspeed*100/255);
+		}	
+	if(newdir==goBack)
+		{
+			BackMove();
+			SetTarget(newspeed*100/255,newspeed*100/255,newspeed*100/255,newspeed*100/255);
+		}
+	if(newdir==goLeft)
+		{
+			LeftMove();
+			SetTarget(newspeed*100/255,newspeed*100/255,newspeed*100/255,newspeed*100/255);
+		}
+	if(newdir==goRight)
+		{
+			RightMove();
+			SetTarget(newspeed*100/255,newspeed*100/255,newspeed*100/255,newspeed*100/255);
+		}		
+}	
+void Trim(direction_t newdir,uint16_t newspeed,float TrimIntensity)
+{
+	if(newdir==goLeft)
+	{
+		FrontMove();
+		SetTarget(newspeed*100*TrimIntensity/255,newspeed*100*TrimIntensity/255,newspeed*100/255,newspeed*100/255);
+	}
+	if(newdir==goRight)
+	{
+		FrontMove();
+		SetTarget(newspeed*100/255,newspeed*100/255,newspeed*100*TrimIntensity/255,newspeed*100*TrimIntensity/255);
+	}		
+}	
+void Rotate(direction_t newdir,uint16_t newspeed)
+{
+	if(newdir==goLeft)
+	{
+			LeftRotate();			
+			SetTarget(newspeed*100/255,newspeed*100/255,newspeed*100/255,newspeed*100/255);
+	}		
+	if(newdir==goRight)
+	{
+			RightRotate();			
+			SetTarget(newspeed*100/255,newspeed*100/255,newspeed*100/255,newspeed*100/255);
+	}		
+}	
+void Stop()
+{
+	SetFourPWM(0,0,0,0);
+	SetTarget(0,0,0,0);
+	StopMove();
+}

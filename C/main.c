@@ -25,30 +25,15 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "pid.h"
+#include "motor.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 
-/*pid参数初始化--------------------*/
-pid_type_def motor1_speed,motor1_position;
-pid_type_def motor2_speed,motor2_position;
-pid_type_def motor3_speed,motor3_position;
-pid_type_def motor4_speed,motor4_position;
-
 int target1,target2,target3,target4;
 int DoubleBegin,Again;
-
-float Kp_position1,Ki_position1,Kd_position1;
-float Kp_position2,Ki_position2,Kd_position2;
-float Kp_position3,Ki_position3,Kd_position3;
-float Kp_position4,Ki_position4,Kd_position4;
-float Kp_speed1,Ki_speed1,Kd_speed1;
-float Kp_speed2,Ki_speed2,Kd_speed2;
-float Kp_speed3,Ki_speed3,Kd_speed3;
-float Kp_speed4,Ki_speed4,Kd_speed4;
-
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -119,26 +104,8 @@ int main(void)
 	HAL_TIM_PWM_Start(&htim4,TIM_CHANNEL_2);
 	HAL_TIM_PWM_Start(&htim4,TIM_CHANNEL_3);
 	HAL_TIM_PWM_Start(&htim4,TIM_CHANNEL_4);
-	//速度式PID参数赋值
-	Kp_speed1=Kp_speed2=Kp_speed3=40;
-	Ki_speed1=Ki_speed2=Ki_speed3=0.25;
-	Kd_speed1=Kd_speed2=Kd_speed3=Kd_speed4=0;
-	Kp_speed4=40;
-	Ki_speed4=0.25;
-	//位置式PID参数赋值	
-	Kp_position1=20;Ki_position1=0;Kd_position1=0;
-	Kp_position2=20;Ki_position2=0;Kd_position2=0;
-	Kp_position3=20;Ki_position3=0;Kd_position3=0;
-	Kp_position4=20;Ki_position4=0;Kd_position4=0;	
-	//PID初始化	
-	PID_init(&motor1_speed,2,3600,2000,Kp_speed1,Ki_speed1,Kd_speed1);
-	PID_init(&motor2_speed,2,3600,2000,Kp_speed2,Ki_speed2,Kd_speed2);
-	PID_init(&motor3_speed,2,3600,2000,Kp_speed3,Ki_speed3,Kd_speed3);
-	PID_init(&motor4_speed,2,3600,2000,Kp_speed4,Ki_speed4,Kd_speed4);	
-	PID_init(&motor1_position,1,3600,2000,Kp_position1,Ki_position1,Kd_position1);
-	PID_init(&motor2_position,1,3600,2000,Kp_position2,Ki_position2,Kd_position2);
-	PID_init(&motor3_position,1,3600,2000,Kp_position3,Ki_position3,Kd_position3);
-	PID_init(&motor4_position,1,3600,2000,Kp_position4,Ki_position4,Kd_position4);
+	//PID相关参数初始化
+	PID_Value_Init();
 	//编码器使能
 	HAL_TIM_Encoder_Start(&htim1,TIM_CHANNEL_1);
 	HAL_TIM_Encoder_Start(&htim1,TIM_CHANNEL_2);
