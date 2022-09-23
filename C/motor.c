@@ -1,5 +1,8 @@
 #include "motor.h"
-//¶ÁÈ¡±àÂëÆ÷µÄÖµ
+#include "connectivity.h"
+#include "common.h"
+
+//ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
 int Read_Encoder(int TIMX)
 {		
 	int Encoder_TIM;		
@@ -17,69 +20,69 @@ int Read_Encoder(int TIMX)
 	}
 	return Encoder_TIM;
 }
-//ÏòÇ°
+//ï¿½ï¿½Ç°
 void FrontMove(void)
 {
 HAL_GPIO_WritePin(GPIOF,m11_Pin,GPIO_PIN_SET);
-HAL_GPIO_WritePin(GPIOF,m12_Pin,GPIO_PIN_RESET);//1ºÅÂÖÏòÇ°
+HAL_GPIO_WritePin(GPIOF,m12_Pin,GPIO_PIN_RESET);//1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°
 
 HAL_GPIO_WritePin(GPIOF,m21_Pin,GPIO_PIN_RESET);
-HAL_GPIO_WritePin(GPIOF,m22_Pin,GPIO_PIN_SET);//2ºÅÂÖÏòÇ°
+HAL_GPIO_WritePin(GPIOF,m22_Pin,GPIO_PIN_SET);//2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°
 
 HAL_GPIO_WritePin(GPIOC,m31_Pin,GPIO_PIN_SET);
-HAL_GPIO_WritePin(GPIOC,m32_Pin,GPIO_PIN_RESET);//3ºÅÂÖÏòÇ°
+HAL_GPIO_WritePin(GPIOC,m32_Pin,GPIO_PIN_RESET);//3ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°
 
 HAL_GPIO_WritePin(GPIOC,m41_Pin,GPIO_PIN_RESET);
-HAL_GPIO_WritePin(GPIOC,m42_Pin,GPIO_PIN_SET);//4ºÅÂÖÏòÇ°
+HAL_GPIO_WritePin(GPIOC,m42_Pin,GPIO_PIN_SET);//4ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°
 }
-//Ïòºó
+//ï¿½ï¿½ï¿½
 void BackMove(void)
 {
 HAL_GPIO_WritePin(GPIOF,m11_Pin,GPIO_PIN_RESET);
-HAL_GPIO_WritePin(GPIOF,m12_Pin,GPIO_PIN_SET);//1ºÅÂÖÏòºó
+HAL_GPIO_WritePin(GPIOF,m12_Pin,GPIO_PIN_SET);//1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 	
 HAL_GPIO_WritePin(GPIOF,m21_Pin,GPIO_PIN_SET);
-HAL_GPIO_WritePin(GPIOF,m22_Pin,GPIO_PIN_RESET);//2ºÅÂÖÏòºó	
+HAL_GPIO_WritePin(GPIOF,m22_Pin,GPIO_PIN_RESET);//2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½	
 
 HAL_GPIO_WritePin(GPIOC,m31_Pin,GPIO_PIN_RESET);
-HAL_GPIO_WritePin(GPIOC,m32_Pin,GPIO_PIN_SET);//3ºÅÂÖÏòºó
+HAL_GPIO_WritePin(GPIOC,m32_Pin,GPIO_PIN_SET);//3ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 HAL_GPIO_WritePin(GPIOC,m41_Pin,GPIO_PIN_SET);
-HAL_GPIO_WritePin(GPIOC,m42_Pin,GPIO_PIN_RESET);//4ºÅÂÖÏòºó
+HAL_GPIO_WritePin(GPIOC,m42_Pin,GPIO_PIN_RESET);//4ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 }
-//Ïò×ó
+//ï¿½ï¿½ï¿½ï¿½
 void LeftMove(void)
 {
 HAL_GPIO_WritePin(GPIOF,m11_Pin,GPIO_PIN_RESET);
-HAL_GPIO_WritePin(GPIOF,m11_Pin,GPIO_PIN_SET);//1ºÅÂÖÏòºó
+HAL_GPIO_WritePin(GPIOF,m11_Pin,GPIO_PIN_SET);//1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 HAL_GPIO_WritePin(GPIOF,m21_Pin,GPIO_PIN_RESET);
-HAL_GPIO_WritePin(GPIOF,m22_Pin,GPIO_PIN_SET);//2ºÅÂÖÏòÇ°
+HAL_GPIO_WritePin(GPIOF,m22_Pin,GPIO_PIN_SET);//2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°
 
 HAL_GPIO_WritePin(GPIOC,m31_Pin,GPIO_PIN_SET);
-HAL_GPIO_WritePin(GPIOC,m32_Pin,GPIO_PIN_RESET);//3ºÅÂÖÏòÇ°
+HAL_GPIO_WritePin(GPIOC,m32_Pin,GPIO_PIN_RESET);//3ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°
 
 HAL_GPIO_WritePin(GPIOC,m41_Pin,GPIO_PIN_SET);
-HAL_GPIO_WritePin(GPIOC,m42_Pin,GPIO_PIN_RESET);//4ºÅÂÖÏòºó
+HAL_GPIO_WritePin(GPIOC,m42_Pin,GPIO_PIN_RESET);//4ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 }
-//ÏòÓÒ
+//ï¿½ï¿½ï¿½ï¿½
 void RightMove(void)
 {
 HAL_GPIO_WritePin(GPIOF,m11_Pin,GPIO_PIN_SET);
-HAL_GPIO_WritePin(GPIOF,m12_Pin,GPIO_PIN_RESET);//1ºÅÂÖÏòÇ°
+HAL_GPIO_WritePin(GPIOF,m12_Pin,GPIO_PIN_RESET);//1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°
 
 HAL_GPIO_WritePin(GPIOF,m21_Pin,GPIO_PIN_SET);
-HAL_GPIO_WritePin(GPIOF,m22_Pin,GPIO_PIN_RESET);//2ºÅÂÖÏòºó
+HAL_GPIO_WritePin(GPIOF,m22_Pin,GPIO_PIN_RESET);//2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 HAL_GPIO_WritePin(GPIOC,m31_Pin,GPIO_PIN_RESET);
-HAL_GPIO_WritePin(GPIOC,m32_Pin,GPIO_PIN_SET);//3ºÅÂÖÏòºó
+HAL_GPIO_WritePin(GPIOC,m32_Pin,GPIO_PIN_SET);//3ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 HAL_GPIO_WritePin(GPIOC,m41_Pin,GPIO_PIN_RESET);
-HAL_GPIO_WritePin(GPIOC,m42_Pin,GPIO_PIN_SET);//4ºÅÂÖÏòÇ°
+HAL_GPIO_WritePin(GPIOC,m42_Pin,GPIO_PIN_SET);//4ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°
 
 }
-//ËÄÂÖ»¬ÐÐ
+//ï¿½ï¿½ï¿½Ö»ï¿½ï¿½ï¿½
 void SkipMove(void)
 {	
 HAL_GPIO_WritePin(GPIOF,m11_Pin,GPIO_PIN_SET);
@@ -97,38 +100,38 @@ HAL_GPIO_WritePin(GPIOC,m42_Pin,GPIO_PIN_SET);
 
 }
 
-//Ïò×óÐý×ª
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ª
 void LeftRotate(void)
 {
 HAL_GPIO_WritePin(GPIOF,m11_Pin,GPIO_PIN_RESET);
-HAL_GPIO_WritePin(GPIOF,m12_Pin,GPIO_PIN_SET);//1ºÅÂÖÏòºó
+HAL_GPIO_WritePin(GPIOF,m12_Pin,GPIO_PIN_SET);//1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 HAL_GPIO_WritePin(GPIOF,m21_Pin,GPIO_PIN_RESET);
-HAL_GPIO_WritePin(GPIOF,m22_Pin,GPIO_PIN_SET);//2ºÅÂÖÏòÇ°
+HAL_GPIO_WritePin(GPIOF,m22_Pin,GPIO_PIN_SET);//2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°
 
 HAL_GPIO_WritePin(GPIOC,m31_Pin,GPIO_PIN_RESET);
-HAL_GPIO_WritePin(GPIOC,m32_Pin,GPIO_PIN_SET);//3ºÅÂÖÏòºó
+HAL_GPIO_WritePin(GPIOC,m32_Pin,GPIO_PIN_SET);//3ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	
 HAL_GPIO_WritePin(GPIOC,m41_Pin,GPIO_PIN_RESET);
-HAL_GPIO_WritePin(GPIOC,m42_Pin,GPIO_PIN_SET);//4ºÅÂÖÏòÇ°	
+HAL_GPIO_WritePin(GPIOC,m42_Pin,GPIO_PIN_SET);//4ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°	
 	
 
 }	
 
-//ÏòÓÒÐý×ª
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ª
 void RightRotate(void)
 {
 HAL_GPIO_WritePin(GPIOF,m11_Pin,GPIO_PIN_SET);
-HAL_GPIO_WritePin(GPIOF,m12_Pin,GPIO_PIN_RESET);//1ºÅÂÖÏòÇ°
+HAL_GPIO_WritePin(GPIOF,m12_Pin,GPIO_PIN_RESET);//1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°
 
 HAL_GPIO_WritePin(GPIOF,m21_Pin,GPIO_PIN_SET);
-HAL_GPIO_WritePin(GPIOF,m22_Pin,GPIO_PIN_RESET);//2ºÅÂÖÏòºó	
+HAL_GPIO_WritePin(GPIOF,m22_Pin,GPIO_PIN_RESET);//2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½	
 
 HAL_GPIO_WritePin(GPIOC,m31_Pin,GPIO_PIN_SET);
-HAL_GPIO_WritePin(GPIOC,m32_Pin,GPIO_PIN_RESET);//3ºÅÂÖÏòÇ°	
+HAL_GPIO_WritePin(GPIOC,m32_Pin,GPIO_PIN_RESET);//3ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°	
 	
 HAL_GPIO_WritePin(GPIOC,m41_Pin,GPIO_PIN_SET);
-HAL_GPIO_WritePin(GPIOC,m42_Pin,GPIO_PIN_RESET);//4ºÅÂÖÏòºó	
+HAL_GPIO_WritePin(GPIOC,m42_Pin,GPIO_PIN_RESET);//4ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½	
 }
 void StopMove(void)
 {	
@@ -151,3 +154,65 @@ __HAL_TIM_SetCompare(&htim4,TIM_CHANNEL_2,b);
 __HAL_TIM_SetCompare(&htim4,TIM_CHANNEL_3,c);
 __HAL_TIM_SetCompare(&htim4,TIM_CHANNEL_4,d);	
 }	
+void SetTarget(int a,int b,int c,int d)
+{
+	target1=a;
+	target2=b;
+	target3=c;
+	target4=d;
+}
+void Move(direction_t newdir,uint16_t newspeed)
+{
+	if(newdir==dirFront)
+		{
+			FrontMove();
+			SetTarget(newspeed*100/255,newspeed*100/255,newspeed*100/255,newspeed*100/255);
+		}	
+	if(newdir==dirBack)
+		{
+			BackMove();
+			SetTarget(newspeed*100/255,newspeed*100/255,newspeed*100/255,newspeed*100/255);
+		}
+	if(newdir==dirLeft)
+		{
+			LeftMove();
+			SetTarget(newspeed*100/255,newspeed*100/255,newspeed*100/255,newspeed*100/255);
+		}
+	if(newdir==dirRight)
+		{
+			RightMove();
+			SetTarget(newspeed*100/255,newspeed*100/255,newspeed*100/255,newspeed*100/255);
+		}		
+}	
+void Trim(direction_t newdir,uint16_t newspeed,float TrimIntensity)
+{
+	if(newdir==dirLeft)
+	{
+		FrontMove();
+		SetTarget(newspeed*100*TrimIntensity/255,newspeed*100*TrimIntensity/255,newspeed*100/255,newspeed*100/255);
+	}
+	if(newdir==dirRight)
+	{
+		FrontMove();
+		SetTarget(newspeed*100/255,newspeed*100/255,newspeed*100*TrimIntensity/255,newspeed*100*TrimIntensity/255);
+	}		
+}	
+void Rotate(direction_t newdir,uint16_t newspeed)
+{
+	if(newdir==dirLeft)
+	{
+			LeftRotate();			
+			SetTarget(newspeed*100/255,newspeed*100/255,newspeed*100/255,newspeed*100/255);
+	}		
+	if(newdir==dirRight)
+	{
+			RightRotate();			
+			SetTarget(newspeed*100/255,newspeed*100/255,newspeed*100/255,newspeed*100/255);
+	}		
+}	
+void Stop()
+{
+	SetFourPWM(0,0,0,0);
+	SetTarget(0,0,0,0);
+	StopMove();
+}

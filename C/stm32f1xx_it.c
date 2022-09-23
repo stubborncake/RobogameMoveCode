@@ -24,7 +24,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "stdio.h"
-#include "connectivity.h"
+#include "callback.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -61,25 +62,16 @@
 extern TIM_HandleTypeDef htim6;
 extern UART_HandleTypeDef huart2;
 /* USER CODE BEGIN EV */
+
+/*ä¸´æ—¶æ¥æ”¶çš„ä¸€ä¸ªå­—ç¬¦*/
 uint8_t res=0;
+/*æ¥æ”¶å­—ç¬¦ä¸²çš„æŒ‡é’ˆ*/
 uint8_t resBuffPtr=0;
+/*uart2çš„æ¥æ”¶å­—ç¬¦ä¸²*/
 uint8_t receiveBuff[receiveBuffSize]={0};
 
+/*é¬¼çŸ¥é“æ˜¯ä»€ä¹ˆä¸œè¥¿*/
 int test=0;
-
-void USART2_IdleCallback__(uint8_t *receiveBuff,uint8_t resBuffPtr)
-{
-	while(__HAL_UART_GET_FLAG(&huart2,UART_FLAG_TC) != SET);	
-	HAL_UART_Transmit(&huart2,receiveBuff,resBuffPtr,0x00ff);	
-	return;
-	message_t newmsg; 
-	newmsg.command=receiveBuff[0];
-	newmsg.argCount=receiveBuff[1];
-	newmsg.argList=&receiveBuff[2];	
-	receiveCmd(newmsg);	
-}
-
-
 
 /* USER CODE END EV */
 
@@ -229,9 +221,24 @@ void USART2_IRQHandler(void)
   /* USER CODE BEGIN USART2_IRQn 0 */
 
   /* USER CODE END USART2_IRQn 0 */
-  HAL_UART_IRQHandler(&huart2);
+  //HAL_UART_IRQHandler(&huart2);
   /* USER CODE BEGIN USART2_IRQn 1 */
+  /*ä¸­æ–­æ¥æ”¶å¤„ç†é˜¶æ®µ,é¢„è®¾çš„IRQHandlerè¢«å¤±èƒ½äº†*/
+	if(__HAL_UART_GET_FLAG(&huart2,UART_FLAG_RXNE) != RESET)
+	{
+		HAL_UART_Receive(&huart2,&res,1,timeoutDefault);		//å°†æ•°æ®æ”¾å…¥ç¼“å†²åŒº
+		if(resBuffPtr < receiveBuffSize){
+			receiveBuff[resBuffPtr] = res;
+			resBuffPtr++;
+		}		
+		__HAL_UART_CLEAR_FLAG(&huart2,UART_FLAG_RXNE);
+	}
 
+	if(__HAL_UART_GET_FLAG(&huart2,UART_FLAG_IDLE) != RESET){	//ç©ºé—²ä¸­æ–­,ä¸€å¸§æ•°æ®æ¥æ”¶å®Œæˆ
+		USART2_IdleCallback(receiveBuff,resBuffPtr);
+    clearReceiveBuff();
+		__HAL_UART_CLEAR_IDLEFLAG(&huart2);
+	}
   /* USER CODE END USART2_IRQn 1 */
 }
 
@@ -251,105 +258,35 @@ void TIM6_IRQHandler(void)
 
 /* USER CODE BEGIN 1 */
 
-//»ù±¾¶¨Ê±Æ÷ÖĞ¶Ï£¬1msÒ»´Î
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½Ğ¶Ï£ï¿½1msÒ»ï¿½ï¿½
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {	
-	if(htim==&htim6) // ÅĞ¶ÏÊÇÄÄÒ»¸ö¶¨Ê±Æ÷
-	{
-		static int time;
-		time++;		
-		static int pwm1=0;
-		static int pwm2=0;
-		static int pwm3=0;
-		static int pwm4=0;
-		static float enc1=0,enc2=0,enc3=0,enc4=0;
-		static float testnumber[2];
-		static int enc;
-  if(htim->Instance == htim6.Instance)
-  {
-		//Ã¿50ms½øÈëÒ»´ÎPID¼ÆËãÖĞ¶Ï
-		if(time % 50 == 0)
-		{		
-			//µ¥»·ËÙ¶ÈPID
-			if(DoubleBegin==0)
-			{	
-			enc1=Read_Encoder(1);
-			if(enc1<0) enc1=-enc1;
-			pwm1=PID_calc(&motor1_speed,enc1,target1);
-			if(pwm1<0) pwm1=0;
-			__HAL_TIM_SetCompare(&htim4,TIM_CHANNEL_1,pwm1);		
-									
-			enc2=Read_Encoder(2);
-			if(enc2<0) enc2=-enc2;
-			pwm2=PID_calc(&motor2_speed,enc2,target2);
-			if(pwm2<0) pwm2=0;
-			__HAL_TIM_SetCompare(&htim4,TIM_CHANNEL_2,pwm2);	
-						
-			enc3=Read_Encoder(3);
-			if(enc3<0) enc3=-enc3;
-			pwm3=PID_calc(&motor3_speed,enc3,target3);
-			if(pwm3<0) pwm3=0;
-			__HAL_TIM_SetCompare(&htim4,TIM_CHANNEL_3,pwm3);	
-			
-			enc4=Read_Encoder(8);
-			if(enc4<0) enc4=-enc4;
-			pwm4=PID_calc(&motor4_speed,enc4,target4);
-			if(pwm4<0) pwm4=0;
-			__HAL_TIM_SetCompare(&htim4,TIM_CHANNEL_4,pwm4);	
-			
-			//ÕâÀïÊÇPIDÇúÏßµ÷²Î
-			static uint8_t tempData[12] = {0,0,0,0,0,0,0,0,0,0,0x80,0x7F};
-			testnumber[0]=enc4;
-			testnumber[1]=100.0;
-			memcpy(tempData, (uint8_t *)&testnumber, sizeof(testnumber));
-			HAL_UART_Transmit(&huart3,(uint8_t *)tempData,12,0x000A);
-			}
-			//Ë«»·Î»ÖÃPID
-			else if(DoubleBegin==1)
-			{	
-			if(Again==1)
-			{
-				enc1=enc2=enc3=enc4=0;
-				Again=0;
-			}
-			
-			enc=Read_Encoder(1);
-			if(enc<0) enc=-enc;
-      enc1 = enc1 + enc;
-			pwm1 = PID_calc(&motor1_position,enc1,target1);//Î»ÖÃ»·
-			pwm1 = PID_calc(&motor1_speed,enc,pwm1);//ËÙ¶È»·	
-			if(pwm1<0) pwm1=0;
-			__HAL_TIM_SetCompare(&htim4,TIM_CHANNEL_1,pwm1);
+  /*
+    72MHz/(1000*72)=1000Hz
+    frequence=1000Hz
+    Period value=1000
+    interrupt interval=1ms	
+  */
+  static uint8_t tick_50period=0;
 
-			enc=Read_Encoder(2);
-			if(enc<0) enc=-enc;
-			enc2 = enc2 + enc;
-			pwm2 = PID_calc(&motor2_position,enc2,target2);//Î»ÖÃ»·
-			pwm2 = PID_calc(&motor2_speed,Read_Encoder(2),pwm2);//ËÙ¶È»·	
-			if(pwm2<0) pwm2=0;
-			__HAL_TIM_SetCompare(&htim4,TIM_CHANNEL_2,pwm2);
-			
-			enc=Read_Encoder(3);
-			if(enc<0) enc=-enc;
-			enc3 = enc3 + enc;
-			pwm3 = PID_calc(&motor3_position,enc3,target3);//Î»ÖÃ»·
-			pwm3 = PID_calc(&motor3_speed,enc,pwm3);//ËÙ¶È»·	
-			if(pwm3<0) pwm3=0;
-			__HAL_TIM_SetCompare(&htim4,TIM_CHANNEL_3,pwm3);
-			
-			enc=Read_Encoder(8);
-			if(enc<0) enc=-enc;
-			enc4 = enc4 + enc;
-			pwm4 = PID_calc(&motor4_position,enc4,target4);//Î»ÖÃ»·
-			pwm4 = PID_calc(&motor4_speed,Read_Encoder(8),pwm4);//ËÙ¶È»·	
-			if(pwm4<0) pwm4=0;
-			__HAL_TIM_SetCompare(&htim4,TIM_CHANNEL_4,pwm4);			
-			}			
-		}		
-		if(time >= 1000) time = 0;							
+  if(htim==&htim6){
+    tim6_callback();
+    tick_50period++;
+    if(tick_50period>=50){
+      tick_50period=0;
+      tim6_50period_callback();
+    }
   }
+	if(htim==&htim6) 
+	{
 	}
 }
 	
+void clearReceiveBuff(void){
+  for(uint8_t i=0;i<receiveBuffSize;i++){
+    receiveBuff[i]=0;
+  }
+  res=0;
+  resBuffPtr=0;
+}
 /* USER CODE END 1 */
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
