@@ -54,7 +54,7 @@ int PID_calc(pid_type_def *pid, int ref, int set)
   pid->set = set;
   pid->fdb = ref;
   pid->error[0] = set - ref;
-	//Î»ÖÃPID
+	//Î»ï¿½ï¿½PID
   if (pid->mode == 1)
   {
     pid->Pout = pid->Kp * pid->error[0];
@@ -67,7 +67,7 @@ int PID_calc(pid_type_def *pid, int ref, int set)
     pid->out = pid->Pout + pid->Iout + pid->Dout;
     LimitMax(pid->out, pid->max_out);
   }
-	//ÔöÁ¿PID
+	//ï¿½ï¿½ï¿½ï¿½PID
   else if (pid->mode == 2)
   {
     pid->Pout = pid->Kp * (pid->error[0] - pid->error[1]);
@@ -94,28 +94,34 @@ void PID_clear(pid_type_def *pid)
   pid->fdb = pid->set = 0;
 }
 
-
+#define PID_INIT(__order) do{\
+  	PID_init(&motor##__order##_position,1,3600,2000,Kp_position##__order,Ki_position##__order,Kd_position##__order);\
+}while(0)
 
 void PID_Value_Init()
 {
-		//ËÙ¶ÈÊ½PID²ÎÊý¸³Öµ
+		//ï¿½Ù¶ï¿½Ê½PIDï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
 	Kp_speed1=Kp_speed2=Kp_speed3=40;
 	Ki_speed1=Ki_speed2=Ki_speed3=0.25;
 	Kd_speed1=Kd_speed2=Kd_speed3=Kd_speed4=0;
 	Kp_speed4=40;
 	Ki_speed4=0.25;
-	//Î»ÖÃÊ½PID²ÎÊý¸³Öµ	
+	//Î»ï¿½ï¿½Ê½PIDï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ	
 	Kp_position1=20;Ki_position1=0;Kd_position1=0;
 	Kp_position2=20;Ki_position2=0;Kd_position2=0;
 	Kp_position3=20;Ki_position3=0;Kd_position3=0;
 	Kp_position4=20;Ki_position4=0;Kd_position4=0;	
-	//PID³õÊ¼»¯	
+	//PIDï¿½ï¿½Ê¼ï¿½ï¿½	
 	PID_init(&motor1_speed,2,3600,2000,Kp_speed1,Ki_speed1,Kd_speed1);
 	PID_init(&motor2_speed,2,3600,2000,Kp_speed2,Ki_speed2,Kd_speed2);
 	PID_init(&motor3_speed,2,3600,2000,Kp_speed3,Ki_speed3,Kd_speed3);
-	PID_init(&motor4_speed,2,3600,2000,Kp_speed4,Ki_speed4,Kd_speed4);	
-	PID_init(&motor1_position,1,3600,2000,Kp_position1,Ki_position1,Kd_position1);
-	PID_init(&motor2_position,1,3600,2000,Kp_position2,Ki_position2,Kd_position2);
-	PID_init(&motor3_position,1,3600,2000,Kp_position3,Ki_position3,Kd_position3);
-	PID_init(&motor4_position,1,3600,2000,Kp_position4,Ki_position4,Kd_position4);
+	PID_init(&motor4_speed,2,3600,2000,Kp_speed4,Ki_speed4,Kd_speed4);
+
+  PID_INIT(1);
+  PID_INIT(2);
+  PID_INIT(3);
+  PID_INIT(4);
+
 }	
+
+
