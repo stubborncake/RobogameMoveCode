@@ -17,6 +17,16 @@ void updateTracer(void)
   tracer[newDir].updateData();
 }
 
+#define Speed_Pid_Cal(x) do{\
+    enc##x = Read_Encoder(x);                           \
+    if (enc##x < 0)                                     \
+      enc##x = -enc##x;                                   \
+    pwm##x = PID_calc(&motor##x##_speed, enc##x, target##x);    \
+    if (pwm##x < 0)                                     \
+      pwm##x = 0;                                       \
+    __HAL_TIM_SetCompare(&htim4, TIM_CHANNEL_##x, pwm##x);\     
+}while(0)
+
 /*更新PWM输出TODO:把注释加上*/
 void updatePWM(void)
 {
@@ -26,37 +36,11 @@ void updatePWM(void)
   static int enc;
   if (DoubleBegin == 0)
   {
-    enc1 = Read_Encoder(1);
-    if (enc1 < 0)
-      enc1 = -enc1;
-    pwm1 = PID_calc(&motor1_speed, enc1, target1);
-    if (pwm1 < 0)
-      pwm1 = 0;
-    __HAL_TIM_SetCompare(&htim4, TIM_CHANNEL_1, pwm1);
-
-    enc2 = Read_Encoder(2);
-    if (enc2 < 0)
-      enc2 = -enc2;
-    pwm2 = PID_calc(&motor2_speed, enc2, target2);
-    if (pwm2 < 0)
-      pwm2 = 0;
-    __HAL_TIM_SetCompare(&htim4, TIM_CHANNEL_2, pwm2);
-
-    enc3 = Read_Encoder(3);
-    if (enc3 < 0)
-      enc3 = -enc3;
-    pwm3 = PID_calc(&motor3_speed, enc3, target3);
-    if (pwm3 < 0)
-      pwm3 = 0;
-    __HAL_TIM_SetCompare(&htim4, TIM_CHANNEL_3, pwm3);
-
-    enc4 = Read_Encoder(8);
-    if (enc4 < 0)
-      enc4 = -enc4;
-    pwm4 = PID_calc(&motor4_speed, enc4, target4);
-    if (pwm4 < 0)
-      pwm4 = 0;
-    __HAL_TIM_SetCompare(&htim4, TIM_CHANNEL_4, pwm4);
+    Speed_Pid_Cal(1);
+    Speed_Pid_Cal(2);
+    Speed_Pid_Cal(3);
+    Speed_Pid_Cal(4);
+   
 
     //������PID���ߵ���
     static uint8_t tempData[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x80, 0x7F};
