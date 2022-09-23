@@ -48,6 +48,7 @@ int Read_Encoder(int TIMX)
 #define OFF (GPIO_PIN_RESET)
 
 
+
 //��ǰ
 void FrontMove(void)
 {
@@ -56,108 +57,38 @@ void FrontMove(void)
 //���
 void BackMove(void)
 {
-	HAL_GPIO_WritePin(GPIOF, m11_Pin, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOF, m12_Pin, GPIO_PIN_SET); // 1�������
-
-	HAL_GPIO_WritePin(GPIOF, m21_Pin, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(GPIOF, m22_Pin, GPIO_PIN_RESET); // 2�������
-
-	HAL_GPIO_WritePin(GPIOC, m31_Pin, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOC, m32_Pin, GPIO_PIN_SET); // 3�������
-
-	HAL_GPIO_WritePin(GPIOC, m41_Pin, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(GPIOC, m42_Pin, GPIO_PIN_RESET); // 4�������
+	WRITE_PIN(OFF,ON,ON,OFF,OFF,ON,ON,OFF);
 }
 //����
 void LeftMove(void)
 {
-	HAL_GPIO_WritePin(GPIOF, m11_Pin, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOF, m11_Pin, GPIO_PIN_SET); // 1�������
-
-	HAL_GPIO_WritePin(GPIOF, m21_Pin, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOF, m22_Pin, GPIO_PIN_SET); // 2������ǰ
-
-	HAL_GPIO_WritePin(GPIOC, m31_Pin, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(GPIOC, m32_Pin, GPIO_PIN_RESET); // 3������ǰ
-
-	HAL_GPIO_WritePin(GPIOC, m41_Pin, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(GPIOC, m42_Pin, GPIO_PIN_RESET); // 4�������
+	WRITE_PIN(OFF,ON,OFF,ON,ON,OFF,ON,OFF);
 }
 //����
 void RightMove(void)
 {
-	HAL_GPIO_WritePin(GPIOF, m11_Pin, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(GPIOF, m12_Pin, GPIO_PIN_RESET); // 1������ǰ
-
-	HAL_GPIO_WritePin(GPIOF, m21_Pin, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(GPIOF, m22_Pin, GPIO_PIN_RESET); // 2�������
-
-	HAL_GPIO_WritePin(GPIOC, m31_Pin, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOC, m32_Pin, GPIO_PIN_SET); // 3�������
-
-	HAL_GPIO_WritePin(GPIOC, m41_Pin, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOC, m42_Pin, GPIO_PIN_SET); // 4������ǰ
+	WRITE_PIN(ON,OFF,ON,OFF,OFF,ON,OFF,ON);
 }
 //���ֻ���
 void SkipMove(void)
 {
-	HAL_GPIO_WritePin(GPIOF, m11_Pin, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(GPIOF, m12_Pin, GPIO_PIN_SET);
-
-	HAL_GPIO_WritePin(GPIOF, m21_Pin, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(GPIOF, m22_Pin, GPIO_PIN_SET);
-
-	HAL_GPIO_WritePin(GPIOC, m31_Pin, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(GPIOC, m32_Pin, GPIO_PIN_SET);
-
-	HAL_GPIO_WritePin(GPIOC, m41_Pin, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(GPIOC, m42_Pin, GPIO_PIN_SET);
+	WRITE_PIN(ON,ON,ON,ON,ON,ON,ON,ON);
 }
 
 //������ת
 void LeftRotate(void)
 {
-	HAL_GPIO_WritePin(GPIOF, m11_Pin, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOF, m12_Pin, GPIO_PIN_SET); // 1�������
-
-	HAL_GPIO_WritePin(GPIOF, m21_Pin, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOF, m22_Pin, GPIO_PIN_SET); // 2������ǰ
-
-	HAL_GPIO_WritePin(GPIOC, m31_Pin, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOC, m32_Pin, GPIO_PIN_SET); // 3�������
-
-	HAL_GPIO_WritePin(GPIOC, m41_Pin, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOC, m42_Pin, GPIO_PIN_SET); // 4������ǰ
+	WRITE_PIN(OFF,ON,OFF,ON,OFF,ON,OFF,ON);
 }
 
 //������ת
 void RightRotate(void)
 {
-	HAL_GPIO_WritePin(GPIOF, m11_Pin, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(GPIOF, m12_Pin, GPIO_PIN_RESET); // 1������ǰ
-
-	HAL_GPIO_WritePin(GPIOF, m21_Pin, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(GPIOF, m22_Pin, GPIO_PIN_RESET); // 2�������
-
-	HAL_GPIO_WritePin(GPIOC, m31_Pin, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(GPIOC, m32_Pin, GPIO_PIN_RESET); // 3������ǰ
-
-	HAL_GPIO_WritePin(GPIOC, m41_Pin, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(GPIOC, m42_Pin, GPIO_PIN_RESET); // 4�������
+	WRITE_PIN(ON,OFF,ON,OFF,ON,OFF,ON,OFF);
 }
 void StopMove(void)
 {
-	HAL_GPIO_WritePin(GPIOF, m11_Pin, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOF, m12_Pin, GPIO_PIN_RESET);
-
-	HAL_GPIO_WritePin(GPIOF, m21_Pin, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOF, m22_Pin, GPIO_PIN_RESET);
-
-	HAL_GPIO_WritePin(GPIOC, m31_Pin, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOC, m32_Pin, GPIO_PIN_RESET);
-
-	HAL_GPIO_WritePin(GPIOC, m41_Pin, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOC, m42_Pin, GPIO_PIN_RESET);
+	WRITE_PIN(OFF,OFF,OFF,OFF,OFF,OFF,OFF,OFF);
 }
 void SetFourPWM(int a, int b, int c, int d)
 {
@@ -173,27 +104,30 @@ void SetTarget(int a, int b, int c, int d)
 	target3 = c;
 	target4 = d;
 }
+
+#define CalSpeed (newspeed * 100 / 255)
+
 void Move(direction_t newdir, uint16_t newspeed)
 {
 	if (newdir == dirFront)
 	{
 		FrontMove();
-		SetTarget(newspeed * 100 / 255, newspeed * 100 / 255, newspeed * 100 / 255, newspeed * 100 / 255);
+		SetTarget(CalSpeed, CalSpeed, CalSpeed, CalSpeed);
 	}
 	if (newdir == dirBack)
 	{
 		BackMove();
-		SetTarget(newspeed * 100 / 255, newspeed * 100 / 255, newspeed * 100 / 255, newspeed * 100 / 255);
+		SetTarget(CalSpeed, CalSpeed,CalSpeed, CalSpeed);
 	}
 	if (newdir == dirLeft)
 	{
 		LeftMove();
-		SetTarget(newspeed * 100 / 255, newspeed * 100 / 255, newspeed * 100 / 255, newspeed * 100 / 255);
+		SetTarget(CalSpeed, CalSpeed, CalSpeed, CalSpeed);
 	}
 	if (newdir == dirRight)
 	{
 		RightMove();
-		SetTarget(newspeed * 100 / 255, newspeed * 100 / 255, newspeed * 100 / 255, newspeed * 100 / 255);
+		SetTarget(CalSpeed, CalSpeed, CalSpeed, CalSpeed);
 	}
 }
 void Trim(direction_t newdir, uint16_t newspeed, float TrimIntensity)
@@ -201,12 +135,12 @@ void Trim(direction_t newdir, uint16_t newspeed, float TrimIntensity)
 	if (newdir == dirLeft)
 	{
 		FrontMove();
-		SetTarget(newspeed * 100 * TrimIntensity / 255, newspeed * 100 * TrimIntensity / 255, newspeed * 100 / 255, newspeed * 100 / 255);
+		SetTarget(CalSpeed * TrimIntensity , CalSpeed * TrimIntensity , CalSpeed, CalSpeed);
 	}
 	if (newdir == dirRight)
 	{
 		FrontMove();
-		SetTarget(newspeed * 100 / 255, newspeed * 100 / 255, newspeed * 100 * TrimIntensity / 255, newspeed * 100 * TrimIntensity / 255);
+		SetTarget(CalSpeed, CalSpeed, CalSpeed * TrimIntensity , CalSpeed * TrimIntensity );
 	}
 }
 void Rotate(direction_t newdir, uint16_t newspeed)
@@ -214,12 +148,12 @@ void Rotate(direction_t newdir, uint16_t newspeed)
 	if (newdir == dirLeft)
 	{
 		LeftRotate();
-		SetTarget(newspeed * 100 / 255, newspeed * 100 / 255, newspeed * 100 / 255, newspeed * 100 / 255);
+		SetTarget(CalSpeed, CalSpeed, CalSpeed, CalSpeed);
 	}
 	if (newdir == dirRight)
 	{
 		RightRotate();
-		SetTarget(newspeed * 100 / 255, newspeed * 100 / 255, newspeed * 100 / 255, newspeed * 100 / 255);
+		SetTarget(CalSpeed, CalSpeed, CalSpeed, CalSpeed);
 	}
 }
 void Stop()
