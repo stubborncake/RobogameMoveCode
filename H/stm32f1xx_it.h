@@ -39,6 +39,9 @@
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
 
+/*接收数据的字符串最大长度*/
+static const uint8_t receiveBuffSize=5;
+
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
@@ -60,6 +63,7 @@ void USART2_IRQHandler(void);
 void TIM6_IRQHandler(void);
 /* USER CODE BEGIN EFP */
 
+void clearReceiveBuff(void);
 /* USER CODE END EFP */
 
 #ifdef __cplusplus
@@ -67,5 +71,3 @@ void TIM6_IRQHandler(void);
 #endif
 
 #endif /* __STM32F1xx_IT_H */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

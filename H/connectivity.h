@@ -1,80 +1,27 @@
-/*¸´ÖÆµ½main.hÀïÃæ£¬Ò²¿ÉÒÔĞÂ½¨Ò»¸öconnectivity.h,È»ºó¸´ÖÆµ½ÕâÀïÃæ*/
 
-/* USER CODE BEGIN ET */
-#include "main.h"
-#include "usart.h"
+#ifndef __CONNECTIVITY_H
+#define __CONNECTIVITY_H
+/* Private includes ----------------------------------------------------------*/
+#include "common.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-typedef enum{
-  errorCmd=0x00,  //Ô¤ÉèµÄÒâÍâ´íÎóÖ¸Áî£¬»òÕßÍ¨ĞÅ¹ı³ÌÖĞµÄÔëÉù
-  moveCmd=0x01,  //¼ÓËÙ»ò¼õËÙµÄÖ¸Áî£¬Ô¤ÉèÒ»¸öËÙ¶È
-  rotateCmd=0x02, //Ô­µØĞı×ªÖ¸Áî£¬Ä¬ÈÏ´ËÊ±ÊÇ¾²Ö¹×´Ì¬
-  trimCmd=0x03, //Ç°½ø¹ı³ÌÖĞµ÷Õû½Ç¶ÈµÄÖ¸Áî£¬²»ÊÇÔ­µØĞı×ª
-  stopCmd=0x04, //¼±É²Ö¸Áî
-  detectCodeCmd=0x05, //¼ì²âÇ°·½ÌõĞÎÂëÖ¸Áî£¬ÓÉc8t6->respberry
-  pushArmCmd=0x06,  //²½½øµç»úÔË¶¯Ö¸Áî
-  detectCodeAns=0x07, //ÌõĞÎÂëµÄ¼ì²â·´À¡Ö¸Áî£¬ÓÉrespberry->c8t6
-  reservedCmd=0x010,  //Ô¤ÁôÖ¸Áî
-  testCmd=0x011,  //Ç°ÆÚ²âÊÔÖ¸Áî£¬Í¨ĞÅĞ­ÒéÊÇ·ñ¿ÉÒÔÔËĞĞ
+/* Exported functions prototypes ---------------------------------------------*/
 
-}command_t;
-
-typedef struct{
-  command_t command;
-  uint8_t argCount;
-  uint8_t * argList;
-  uint32_t timeout;
-}message_t;
-
-typedef enum{
-  sensorDirFront=0x00,
-  sensorDirRight=0x01,
-  sensorDirBack=0x02,
-  sensorDirLeft=0x03,
-}sensorDir_t;
-
-
-typedef enum{
-  goFront=0,
-  goRight=1,
-  goBack=2,
-  goLeft=3,
-}direction_t;
-
-typedef uint8_t status_t;
-
-/*Æ½·²½Úµã£¬¼´Â·³ÌÖĞµÄÈÎÒâ½ÚµãÀàĞÍ£¬ËÄ¸ö´«¸ĞÆ÷·µ»ØÖµµÄÅÅÁĞ×éºÏ*/
-typedef enum{
-  nowhere=0,
-  frontOnly=1,
-  backOnly=2,
-  rightOnly=3,
-  leftOnly=4,
-  straightLine=5,
-  horizontalLine=6,
-  rightTurn=7,
-  leftTurn=8,
-  rightFork=9,
-  leftFork=10,
-  T_crossing=11,
-  crossing=12,
-}plainNode_t;
-
-/*¹Ø¼ü½Úµã£¬¼´Ñ²ÏßÄ£¿éµÄ¶¨Î»½Úµã*/
-typedef enum{
-  startLine=0,
-  upperRightTurning=1,
-  lowerRightTurning=2,
-  baseNode=3,
-  crossroadLeft=4,
-  crossroadMid=5,
-  crossroadRight=6,
-  curlingDepositEasy=7,
-  curlingDepositHard=8, 
-
-}keyNode_t;
-
+/*å‘respberryå‘é€æŒ‡ä»¤*/
 HAL_StatusTypeDef sendCommand(message_t newMsg);
-void receiveCmd(message_t newMsg);
-void Delay_us(uint16_t us);
-/* USER CODE END ET */
+
+/*æ¥æ”¶åˆ°uart2ä¼ æ¥çš„æŒ‡ä»¤åçš„å¤„ç†*/
+status_t receiveCommand(message_t newMsg);
+
+/* Private defines -----------------------------------------------------------*/
+
+#define __CONNECTIVITY
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif

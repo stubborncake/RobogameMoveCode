@@ -32,26 +32,18 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "pid.h"
-#include "motor.h"
 #include "string.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
 
+
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-extern pid_type_def motor1_speed;
-extern pid_type_def motor1_position;
-extern pid_type_def motor2_speed;
-extern pid_type_def motor2_position;
-extern pid_type_def motor3_speed;
-extern pid_type_def motor3_position;
-extern pid_type_def motor4_speed;
-extern pid_type_def motor4_position;
+
 
 extern int target1,target2,target3,target4;
 
@@ -62,22 +54,11 @@ extern TIM_HandleTypeDef htim4;
 extern TIM_HandleTypeDef htim6;
 extern TIM_HandleTypeDef htim8;
 
-extern float Kp_position1,Ki_position1,Kd_position1;
-extern float Kp_position2,Ki_position2,Kd_position2;
-extern float Kp_position3,Ki_position3,Kd_position3;
-extern float Kp_position4,Ki_position4,Kd_position4;
-extern float Kp_speed1,Ki_speed1,Kd_speed1;
-extern float Kp_speed2,Ki_speed2,Kd_speed2;
-extern float Kp_speed3,Ki_speed3,Kd_speed3;
-extern float Kp_speed4,Ki_speed4,Kd_speed4;
+extern int DoubleBegin;//ï¿½Ð¶ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½Î¢ï¿½ï¿½ï¿½Ç¶ï¿½Ë«ï¿½ï¿½ï¿½ï¿½È«ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½0ï¿½Ç£ï¿½1ï¿½ï¿½
+extern int Again;//ï¿½Ð¶ï¿½ï¿½Ç·ï¿½ï¿½ï¿½Ò»ï¿½Î½ï¿½ï¿½ï¿½Ë«ï¿½ï¿½ï¿½ï¿½ï¿½é£¬ï¿½ï¿½Î¶ï¿½ï¿½ï¿½Îªï¿½Ë²ï¿½ï¿½ï¿½Ë«ï¿½ï¿½ï¿½ï¿½ï¿½È¶ï¿½ï¿½ÔµÄ´ï¿½ï¿½ï¿½
 
-extern int DoubleBegin;//ÅÐ¶ÏÊÇ·ñ½øÈëÎ¢µ÷½Ç¶ÈË«»·µÄÈ«¾Ö±äÁ¿£¬0·Ç£¬1ÊÇ
-extern int Again;//ÅÐ¶ÏÊÇ·ñÓÖÒ»´Î½øÐÐË«»·²âÑé£¬Õâ¶Î¶¼ÊÇÎªÁË²âÊÔË«»·µÄÎÈ¶¨ÐÔµÄ´úÂë
-
-extern uint8_t res;
-extern uint8_t resBuffPtr;
-static const uint8_t receiveBuffSize=100;
 extern int test;
+
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
@@ -109,6 +90,20 @@ void Error_Handler(void);
 #define m41_GPIO_Port GPIOC
 #define m42_Pin GPIO_PIN_3
 #define m42_GPIO_Port GPIOC
+#define SENSOR0_Pin GPIO_PIN_1
+#define SENSOR0_GPIO_Port GPIOD
+#define SENSOR1_Pin GPIO_PIN_2
+#define SENSOR1_GPIO_Port GPIOD
+#define SENSOR2_Pin GPIO_PIN_3
+#define SENSOR2_GPIO_Port GPIOD
+#define SENSOR3_Pin GPIO_PIN_4
+#define SENSOR3_GPIO_Port GPIOD
+#define SENSOR4_Pin GPIO_PIN_5
+#define SENSOR4_GPIO_Port GPIOD
+#define SELECTOR0_Pin GPIO_PIN_6
+#define SELECTOR0_GPIO_Port GPIOD
+#define SELECTOR1_Pin GPIO_PIN_7
+#define SELECTOR1_GPIO_Port GPIOD
 #define LED_Pin GPIO_PIN_5
 #define LED_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
@@ -120,5 +115,3 @@ void Error_Handler(void);
 #endif
 
 #endif /* __MAIN_H */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
