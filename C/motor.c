@@ -23,7 +23,7 @@ int Read_Encoder(int TIMX)
 		Encoder_TIM = (short)TIM3->CNT;
 		TIM3->CNT = 0;
 		break;
-	case 8:
+	case 4:
 		Encoder_TIM = (short)TIM8->CNT;
 		TIM8->CNT = 0;
 		break;
