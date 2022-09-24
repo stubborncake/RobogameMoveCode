@@ -3,21 +3,25 @@
 #include "common.h"
 
 int Read_Encoder(int TIMX);
-//ÏÂÃæÍêÈ«ÊÇ¿ØÖÆÇı¶¯µçÁ÷·½Ïò£¬²»¿ØÖÆËÙ¶È
-void FrontMove(void);//ÏòÇ°ÒÆ¶¯
-void BackMove(void);//ÏòºóÒÆ¶¯
-void LeftMove(void);//Ë®Æ½Ïò×óÒÆ¶¯
-void RightMove(void);//Ë®Æ½ÏòÓÒÒÆ¶¯
-void SkipMove(void);//ËÄÂÖ»¬¶¯
-void RightRotate(void);//ÏòÓÒĞı×ª
-void LeftRotate(void);//Ïò×óĞı×ª
-void StopMove(void);//ËÄÂÖÖÆ¶¯
+//ä¸‹é¢å®Œå…¨æ˜¯æ§åˆ¶é©±åŠ¨ç”µæµæ–¹å‘ï¼Œä¸æ§åˆ¶é€Ÿåº¦
+void FrontMove(void);//å‘å‰ç§»åŠ¨
+void BackMove(void);//å‘åç§»åŠ¨
+void LeftMove(void);//æ°´å¹³å‘å·¦ç§»åŠ¨
+void RightMove(void);//æ°´å¹³å‘å³ç§»åŠ¨
+void SkipMove(void);//å››è½®æ»‘åŠ¨
+void RightRotate(void);//å‘å³æ—‹è½¬
+void LeftRotate(void);//å‘å·¦æ—‹è½¬
+void StopMove(void);//å››è½®åˆ¶åŠ¨
 
-void SetFourPWM(int a,int b,int c,int d);//ËÄÂ·PWM¶¨ÖµÊä³ö
-void SetTarget(int a,int b,int c,int d);//ÉèÖÃËÄ¸ötargetÊıÖµ
-//ÏÂÃæÊÇ°üº¬·½ÏòºÍËÙ¶ÈµÄ¿ØÖÆ
+void SetFourPWM(int a,int b,int c,int d);//å››è·¯PWMå®šå€¼è¾“å‡º
+void SetTarget(int a,int b,int c,int d);//è®¾ç½®å››ä¸ªtargetæ•°å€¼
+//ä¸‹é¢æ˜¯åŒ…å«æ–¹å‘å’Œé€Ÿåº¦çš„æ§åˆ¶
 void Move(direction_t newdir,uint16_t newspeed);
 void Trim(direction_t newdir,uint16_t newspeed,float TrimIntensity);
 void Rotate(direction_t newdir,uint16_t newspeed);
 void Stop(void);
+/*åŒç¯PIDæ§åˆ¶ç§»åŠ¨è·ç¦»ï¼Œå…¶ä¸­distanceå‚æ•°ï¼Œ2808ä¸ºè½®å­æ—‹è½¬ä¸€æ•´åœˆ,åˆ‡è®°æ¯æ¬¡åŒç¯PIDç§»åŠ¨ç»“æŸï¼Œè¦æ‰‹åŠ¨æŠŠDoubleBeginå…¨å±€å˜é‡ç½®é›¶*/
+void DoublePidMove(direction_t newdir,uint16_t distance);
+/*åŒç¯PIDæ§åˆ¶æ—‹è½¬è·ç¦»ï¼Œå…¶ä¸­distanceå‚æ•°ï¼Œ2808ä¸ºè½®å­æ—‹è½¬ä¸€æ•´åœˆ,åˆ‡è®°æ¯æ¬¡åŒç¯PIDç§»åŠ¨ç»“æŸï¼Œè¦æ‰‹åŠ¨æŠŠDoubleBeginå…¨å±€å˜é‡ç½®é›¶*/
+void DoublePidRotate(direction_t newdir,uint16_t distance);
 #endif
