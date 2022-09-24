@@ -162,3 +162,21 @@ void Stop()
 	SetTarget(0, 0, 0, 0);
 	StopMove();
 }
+void DoublePidMove(direction_t newdir,uint16_t distance)
+{
+	DoubleBegin=1;//双环开始指示变量置1	
+	Again=1;//双环第一次指示变量置1
+	if(newdir==goFront) FrontMove();
+	if(newdir==goBack)  BackMove();
+	if(newdir==goLeft)  LeftMove();
+	if(newdir==goRight) RightMove();	
+	SetTarget(distance,distance,distance,distance);
+}	
+void DoublePidRotate(direction_t newdir,uint16_t distance)
+{
+	DoubleBegin=1;//双环开始指示变量置1	
+	Again=1;//双环第一次指示变量置1
+	if(newdir==goLeft)  LeftRotate();
+	if(newdir==goRight) RightRotate();
+	SetTarget(distance,distance,distance,distance);
+}	
