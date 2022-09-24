@@ -87,7 +87,7 @@ void updatePWM(void)
       enc = -enc;
     enc2 = enc2 + enc;
     pwm2 = PID_calc(&motor2_position, enc2, target2);      //λ�û�
-    pwm2 = PID_calc(&motor2_speed, Read_Encoder(2), pwm2); //�ٶȻ�
+    pwm2 = PID_calc(&motor2_speed, enc, pwm2); //�ٶȻ�
     if (pwm2 < 0)
       pwm2 = 0;
     __HAL_TIM_SetCompare(&htim4, TIM_CHANNEL_2, pwm2);
@@ -107,7 +107,7 @@ void updatePWM(void)
       enc = -enc;
     enc4 = enc4 + enc;
     pwm4 = PID_calc(&motor4_position, enc4, target4);      //λ�û�
-    pwm4 = PID_calc(&motor4_speed, Read_Encoder(8), pwm4); //�ٶȻ�
+    pwm4 = PID_calc(&motor4_speed, enc, pwm4); //�ٶȻ�
     if (pwm4 < 0)
       pwm4 = 0;
     __HAL_TIM_SetCompare(&htim4, TIM_CHANNEL_4, pwm4);
