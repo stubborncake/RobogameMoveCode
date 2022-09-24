@@ -99,7 +99,7 @@ void PID_clear(pid_type_def *pid)
 }while(0)
 
 #define PID_POSITION_INIT(__order) do{\
-  	PID_init(&motor##__order##_position,1,3600,2000,Kp_position##__order,Ki_position##__order,Kd_position##__order);\
+  	PID_init(&motor##__order##_position,1,1000,2000,Kp_position##__order,Ki_position##__order,Kd_position##__order);\
 }while(0)
 
 void PID_Value_Init()
