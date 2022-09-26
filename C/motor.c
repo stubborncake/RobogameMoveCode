@@ -105,7 +105,7 @@ void SetTarget(int a, int b, int c, int d)
 	target4 = d;
 }
 
-#define CalSpeed (newspeed * 100 / 255)
+#define CalSpeed newspeed
 
 void Move(direction_t newdir, uint16_t newspeed)
 {
