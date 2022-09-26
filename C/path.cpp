@@ -13,8 +13,7 @@ uint8_t headingDir=dirNowhere;
 status_t onTrail=0;
 
 /*最基本的运动函数最好被封装好，不需要被extern.
-TODO:返回状态status_t以表示参数是否符合定义，
-例如在运动时发送了旋转指令，需要被识别到*/
+
 
 /* Private functions defines ---------------------------------------------*/
 /*向指定方向，以指定速度运动*/
@@ -39,7 +38,6 @@ void chassisTrim(direction_t newDir,uint8_t trimIntensity){
 		return;
 	if(onTrail==0)
 		return;
-	//根据前进方向的不同发送不同的trim指令，或者在从机那边接收TODO:
 	if(newDir==dirRight || newDir==dirLeft){
 		Trim(newDir,speedHigh,trimIntensDefault);
 	}else if(newDir==dirFront){
@@ -120,6 +118,18 @@ status_t goThroughWasteLand(uint32_t timeout){
 
 }
 
+status_t gotoLaunchNode(void){
+	for(uint8_t i=0;i<3;i++){
+  	WAIT_FOR(tracer[dirRight].onPath==1,quiteLongTime);
+		HAL_Delay(1500);
+	}
+	turnRight(crossing,quiteLongTime);
+	HAL_Delay(2000);
+
+	return 1;
+}
+
+
 status_t gotoBaseNode(keyNode_t preKeyNode,uint32_t timeout){
 	switch (preKeyNode)
 	{
@@ -152,27 +162,26 @@ status_t gotoBaseNode(keyNode_t preKeyNode,uint32_t timeout){
 
 status_t gotoCurlingDeposit(void){
 	turnRight(crossing,timeoutMax);
-	WAIT_FOR(0,timeout_nsp::curlingDepositeTime);
+	WAIT_FOR(0,curlingDepositeTime);
 
 
 	return 1;
 }
 
 __DEBUG void testPath(void){
+	/*测试阶段保留代码，下一步均调用chassis_t中集成的功能实现TODO:*/
 	leaveStartLine();
 	patrol.setKeyNode(startLine);
 
 	turnRight(rightTurn,quiteLongTime);
 	patrol.setKeyNode(upperRightTurning);
 
-	chassisMove(dirFront,speedHigh);
-	HAL_Delay(1000);
-
 	goThroughWasteLand(wasteLandTime);
 	patrol.setKeyNode(lowerRightTurning);
 
-	gotoBaseNode(lowerRightTurning,quiteLongTime);
-	patrol.setKeyNode(baseNode);
+	gotoLaunchNode();
+	patrol.setKeyNode(launchNode);
+	//patrol.setKeyNode(baseNode);
 
 }
 
