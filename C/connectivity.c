@@ -2,7 +2,7 @@
 
 HAL_StatusTypeDef sendCommand(message_t &newCmd, const uint8_t argCount)
 {
-	uint8_t *newMsg = new uint8_t[argCount + 2];
+	uint8_t newMsg[argCountMax+2]={0};
 	newMsg[0] = (uint8_t)newCmd.command;
 	for (uint8_t i = 0; i < argCount; i++)
 	{
@@ -42,3 +42,25 @@ status_t receiveCommand(message_t newMsg)
 	}
 	return flag;
 }
+
+void detectCmd(void){
+	message_t newCmd;
+	newCmd.command=detectCodeCmd;
+	newCmd.argList[0]=0;
+	sendCommand(newCmd,0);
+}
+
+void raiseArmCmd(status_t newDir, uint8_t distance){
+	message_t newCmd;
+	newCmd.command=armRaiseCmd;
+	newCmd.argList[0]=newDir;
+	newCmd.argList[1]=distance;
+	sendCommand(newCmd,2);
+}
+
+/*backup plan for communication with respberry: send raw uint8_t*/
+__DEBUG HAL_StatusTypeDef sendCommadbyRaw(command_t newCmd,uint8_t arg1,uint8_t arg2){
+	uint8_t newMsg[3]={(uint8_t)newCmd,arg1,arg2};
+	return HAL_UART_Transmit(&huart2, newMsg, 3, timeoutDefault);;
+}
+

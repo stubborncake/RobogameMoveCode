@@ -1,12 +1,14 @@
 
 #include "callback.h"
 #include "connectivity.h"
+#include "counter.h"
 
 #include "motor.h"
 #include "pid.h"
 
 #include "tracer.h"
 #include "patrol.h"
+#include "path.h"
 
 /* Private functions defines ---------------------------------------------*/
 
@@ -16,6 +18,7 @@ void updateTracer(void)
   direction_t newDir = tracerSelector.update();
   tracer[newDir].updateData();
 }
+
 
 /*更新PWM输出TODO:把注释加上*/
 void updatePWM(void)
@@ -114,10 +117,13 @@ void updatePWM(void)
   }
 }
 
+
 /*输出tracer的数值到PC*/
 __DEBUG void printSensorValues(void)
 {
   static uint8_t testDir = (uint8_t)dirFront;
+  uint8_t msgHead[]={(uint8_t)(testDir+'0'),':','\t'};
+  printMsg(msgHead,3);
   tracer[testDir].printSensorVal();
   if (testDir < dirBack)
   {
@@ -129,10 +135,18 @@ __DEBUG void printSensorValues(void)
   }
 }
 
-/*取二者较小的数值*/
-inline uint8_t min(uint8_t a, uint8_t b)
-{
-  return (a < b) ? a : b;
+/*行进过程中调整方向,仅支持向前行进时对tracer[dirFront]进行检测*/
+__DEBUG void adjustDirFront(void){
+  using namespace tracer_nsp;
+  if(onTrail==0 || headingDir!=dirFront)
+    return;
+  if(tracer[dirFront].readSensorVal(L2)==blackParcel || tracer[dirFront].readSensorVal(R1)==whiteParcel ){
+    chassisTrim(dirLeft,trimIntensDefault);
+  }else if(tracer[dirFront].readSensorVal(R2)==blackParcel || tracer[dirFront].readSensorVal(L1)==whiteParcel){
+    chassisTrim(dirRight,trimIntensDefault);
+  }else{
+    chassisTrim(dirFront,trimIntensDefault);
+  }
 }
 
 /*根据接收字符串和长度构造message_t类型*/
@@ -151,18 +165,26 @@ inline message_t buildMsgType(uint8_t *buff, uint8_t length)
 
 void tim6_callback(void)
 {
+  /*进入中断间隔为1ms*/
+
+  if(flagInitReady==0)
+    return;
+  counter.updateDate();
   updateTracer();
 }
 
 void tim6_50period_callback(void)
 {
-  printSensorValues();
+  /*进入中断间隔为50ms*/
+  if(flagInitReady==0)
+    return;
   updatePWM();
+  adjustDirFront();
 }
 
 void USART2_IdleCallback(uint8_t *buff, uint8_t buffSize)
 {
-  const uint8_t length = min(argCountMax, buffSize - 1);
+  const uint8_t length = MIN(argCountMax, buffSize - 1);
   message_t newMsg = buildMsgType(buff, length);
   receiveCommand(newMsg);
 }
