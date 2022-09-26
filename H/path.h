@@ -16,6 +16,10 @@ extern "C" {
 /* Exported constants ------------------------------------------------------------*/
 
 /* Exported functions prototypes ---------------------------------------------*/
+
+/*直线行进过程中调整方向*/
+void chassisTrim(direction_t newDir,uint8_t trimIntensity=1);
+
 /*从起跑线离开的阶段*/
 status_t leaveStartLine(void);
 /*直角弯旋转的原子指令*/

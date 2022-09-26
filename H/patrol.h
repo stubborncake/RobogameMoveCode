@@ -9,6 +9,7 @@
 extern "C" {
 #endif
 	
+/* Exported types ------------------------------------------------------------*/
 
 /*平凡节点，即路程中的任意节点类型，四个传感器返回值的排列组合*/
 enum plainNode_t{
@@ -42,6 +43,8 @@ enum keyNode_t{
   lostInNowhere=(uint8_t)(-1),
 
 };
+
+/* Class defines -----------------------------------------------------------*/
 
 class selector_t{
 private:
@@ -93,9 +96,16 @@ public:
   /*从preNode出发向newNode行进，整合了各个部分的运动方向*/
 	void headingFor(keyNode_t newKeyNode,uint32_t timeout=timeoutMax)const;
 
+  /*输出当前平凡节点数值*/
+  __DEBUG status_t printPlainNode(void);
+
 };
 
+/* Exported macro ------------------------------------------------------------*/
+
+/*选择器74hc153的类对象*/
 extern selector_t tracerSelector;
+/*最高级的巡线逻辑实现的类对象*/
 extern patrol_t patrol;
 
 #define __PATROL
