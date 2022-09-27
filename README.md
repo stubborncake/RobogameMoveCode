@@ -1,8 +1,8 @@
 # zet6_merge_beta
 
-## @Swayee @stubborncake TeamBlackStar_Robogame
+## @Swayee @stubborncake Team_BlackStar Robogame_USTC_2022
 
-##TODO LIST
+## TODO LIST
 
 - ~~将运动和旋转等chassis相关的函数全部集成到chassis_t的类方法中，去掉中间接口的调用~~
 - 测试counter_t的实现效果，并学习函数指针的使用，实现waitFor的函数实现，而不是宏定义
@@ -20,7 +20,7 @@
 
 -----
 
-##NOTICE
+## NOTICE
 
 基本逻辑框架:
 - sensor_t * 5 -> tracer_t;
