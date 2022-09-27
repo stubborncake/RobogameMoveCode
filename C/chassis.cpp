@@ -23,7 +23,7 @@ void chassis_t::move(direction_t newDir, uint8_t targetSpeed)
         return;
     headingDir = newDir;
     moveSpeed = MIN(targetSpeed, speedMax);
-    Move(newDir, moveSpeed);
+    motorMove(newDir, moveSpeed);
 }
 
 void chassis_t::rotate(direction_t newDir, uint8_t targetSpeed)
@@ -33,7 +33,7 @@ void chassis_t::rotate(direction_t newDir, uint8_t targetSpeed)
     if (newDir == dirRight || newDir == dirLeft)
     {
         rotateSpeed = MIN(targetSpeed, speedMax);
-        Rotate(newDir, rotateSpeed);
+        motorRotate(newDir, rotateSpeed);
     }
 }
 
@@ -46,16 +46,19 @@ void chassis_t::trim(direction_t newDir, uint8_t trimIntensity)
     // TODO:根据前进方向的不同发送不同的trim指令:
     if (newDir == dirRight || newDir == dirLeft)
     {
-        Trim(newDir, moveSpeed, trimIntensity); /*根据上一次的move来觉得这次的微调的速度*/
+        motorTrim(newDir, moveSpeed, trimIntensity); /*根据上一次的move来觉得这次的微调的速度*/
+    }else if(newDir==dirFront){
+        motorMove(dirFront,moveSpeed);
     }
 }
 
-void chassis_t::stop(uint8_t stopIntensity)
+void chassis_t::stop(uint32_t delayTime)
 {
     headingDir = dirNowhere;
     moveSpeed = 0;
     rotateSpeed = 0;
-    Stop();
+    motorStop();
+    HAL_Delay(delayTime);
 }
 
 void chassis_t::raiseArm(tracer_nsp::up_down_t newDir, uint8_t distance)
@@ -94,12 +97,16 @@ void chassis_t::takeCurling(uint8_t argReserved)
     /*TODO:将detectCode 和 takeCurling整合到一起，参数表示是高难区还是低难区*/
 }
 
+__DEBUG void chassis_t::buzz(uint8_t argReseved){
+
+}
+
 __DEBUG void chassis_t::rotatebyDegree(direction_t newDir, uint8_t degree)
 {
 }
 
 void chassis_t::halt(void)
 {
-    stop();
-    Error_Handler();
+    motorStop();
+    /*TODO:添加停机相关的操作，目前看来还没啥需要的*/
 }

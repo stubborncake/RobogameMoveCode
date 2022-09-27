@@ -3,6 +3,8 @@
 #include "tracer.h"
 #include "patrol.h"
 #include "path.h"
+#include "motor.h"
+#include "pid.h"
 
 /* Exported macro ------------------------------------------------------------*/
 
@@ -15,9 +17,9 @@ status_t flagInitReady=0;
 
 __DEBUG HAL_StatusTypeDef \
 printMsg(uint8_t *newMsg,uint8_t msgSize,UART_HandleTypeDef printUart,uint32_t timeout){
-    if(sizeof(newMsg)<msgSize)
-        msgSize=sizeof(newMsg)+1;
-    return HAL_UART_Transmit(&printUart,newMsg,msgSize,timeout);
+  if(sizeof(newMsg)<msgSize)
+      msgSize=sizeof(newMsg)+1;
+  return HAL_UART_Transmit(&printUart,newMsg,msgSize,timeout);
 }
 
 __DEBUG HAL_StatusTypeDef printText(const char *newMsg){
@@ -28,7 +30,6 @@ __DEBUG HAL_StatusTypeDef printText(const char *newMsg){
   }
   return printMsg(newMsg_uint8,msgSize,huart3,timeoutDefault);
 }
-
 
 void Delay_us(uint16_t us)
 {
@@ -43,6 +44,32 @@ void Delay_us(uint16_t us)
   } while (tmp & 0x01 && !(tmp & (1 << 16)));
   SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;
   SysTick->VAL = 0x00;
+}
+
+status_t motorInit(void){
+  //PWM���ʹ��
+	HAL_TIM_PWM_Start(&htim4,TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(&htim4,TIM_CHANNEL_2);
+	HAL_TIM_PWM_Start(&htim4,TIM_CHANNEL_3);
+	HAL_TIM_PWM_Start(&htim4,TIM_CHANNEL_4);
+	//PID��ز�����ʼ��
+	PID_Value_Init();
+	//������ʹ��
+	HAL_TIM_Encoder_Start(&htim1,TIM_CHANNEL_1);
+	HAL_TIM_Encoder_Start(&htim1,TIM_CHANNEL_2);
+	HAL_TIM_Encoder_Start(&htim2,TIM_CHANNEL_1);
+	HAL_TIM_Encoder_Start(&htim2,TIM_CHANNEL_2);
+	HAL_TIM_Encoder_Start(&htim3,TIM_CHANNEL_1);
+	HAL_TIM_Encoder_Start(&htim3,TIM_CHANNEL_2);
+	HAL_TIM_Encoder_Start(&htim8,TIM_CHANNEL_1);
+	HAL_TIM_Encoder_Start(&htim8,TIM_CHANNEL_2);
+
+  DoubleBegin=0;
+  Again=0;
+  target1=target2=target3=target4=0;
+  SetFourPWM(0,0,0,0);
+  StopMove();
+  return 1;
 }
 
 status_t tracerInit(void){
@@ -68,8 +95,3 @@ status_t tracerDestrcut(void){
   }
   return 1;
 }
-
-__DEBUG void buzzerBeep(uint8_t intensity){
-
-}
-
