@@ -17,9 +17,6 @@ extern "C" {
 
 /* Exported functions prototypes ---------------------------------------------*/
 
-/*直线行进过程中调整方向*/
-void chassisTrim(direction_t newDir,uint8_t trimIntensity=1);
-
 /*从起跑线离开的阶段*/
 status_t leaveStartLine(void);
 /*直角弯旋转的原子指令*/
@@ -45,11 +42,6 @@ __DEBUG void testPath(void);
 
 
 /* Exported macro ------------------------------------------------------------*/
-
-/*当前运动方向，dirNowhere即停止不动*/
-extern uint8_t headingDir;
-/*当前是否预设地在路线上，即曲线部分跳过时，需要手动置为0*/
-extern status_t onTrail;
 
 #define __PATH
 
