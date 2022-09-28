@@ -14,6 +14,28 @@ status_t flagInitReady=0;
 
 /* Exported functions definations ---------------------------------------------*/
 
+direction_t oppositeDir(uint8_t newDir){
+    uint8_t opDir=dirNowhere;
+    switch ((direction_t)newDir)
+    {
+    case dirFront:
+        opDir=dirBack;
+        break;
+    case dirRight:
+        opDir=dirLeft;
+        break;
+    case dirLeft:
+        opDir=dirRight;
+        break;
+    case dirBack:
+        opDir=dirFront;
+        break;
+    default:
+        opDir=dirNowhere;
+        break;
+    }
+    return (direction_t)opDir;
+}
 
 __DEBUG HAL_StatusTypeDef \
 printMsg(uint8_t *newMsg,uint8_t msgSize,UART_HandleTypeDef printUart,uint32_t timeout){

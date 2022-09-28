@@ -1,5 +1,6 @@
 
 #include "path.h"
+#include "chassis.h"
 
 #include "motor.h"
 #include "tracer.h"
@@ -9,73 +10,37 @@
 using namespace timeout_nsp;
 
 /* Exported macro ------------------------------------------------------------*/
-uint8_t headingDir=dirNowhere;
-status_t onTrail=0;
-
-/*最基本的运动函数最好被封装好，不需要被extern.
-
 
 /* Private functions defines ---------------------------------------------*/
-/*向指定方向，以指定速度运动*/
-void chassisMove(direction_t newDir,uint8_t targetSpeed=speedHigh){
-	if(newDir==dirNowhere || newDir==dirAll)
-		return;
-	headingDir=newDir;
-	Move(newDir,targetSpeed);
-}
-/*静止状态下向左或者向右旋转，以指定速度*/
-void chassisRotate(direction_t newDir,uint8_t targetSpeed=speedHigh){
-	if(headingDir!=dirNowhere)
-		return;
-	if(newDir==dirRight || newDir==dirLeft){
-    	Rotate(newDir,targetSpeed);
-	}
-}
-/*在行进过程中，微调前进方向，目前仅支持向前行进时调整方向，
-	TODO:横向移动的还没写，向后移动时，输入相反参数即可*/
-void chassisTrim(direction_t newDir,uint8_t trimIntensity){
-	if(headingDir==dirNowhere)
-		return;
-	if(onTrail==0)
-		return;
-	if(newDir==dirRight || newDir==dirLeft){
-		Trim(newDir,speedHigh,trimIntensDefault);
-	}else if(newDir==dirFront){
-		Move(dirFront,speedHigh);
-	}
-}
-/*急刹指令，在任意速度运动时停止*/
-void chassisStop(uint8_t stopIntensity=1){
-	headingDir=dirNowhere;
-	Stop();
-}
 
 /* Exported functions defines ---------------------------------------------*/
 
 status_t leaveStartLine(void){
-  onTrail=1;
+  chassis.onTrail=1;
   HAL_Delay(5000);
-  chassisMove(dirFront,speedHigh);
+  chassis.move(dirFront,speedHigh);
   HAL_Delay(2000);
   return 1;
 }
 
 status_t makeTurn(direction_t newDir,plainNode_t newNode,uint32_t timeout){
-	chassisMove(dirFront,speedHigh);
-	if(newNode==rightTurn || newNode==T_crossing || newNode==leftFork){
-		WAIT_FOR(tracer[dirFront].onPath==0,timeout);
-		chassisMove(dirFront,speedLow);
-	}
+	chassis.move(dirFront,speedHigh);
 
-	//WAIT_FOR(detectNode(patrol,newNode),timeoutMax);
 	WAIT_FOR(tracer[dirRight].readSensorVal(tracer_nsp::R1)==blackParcel ||\
 		tracer[dirRight].readSensorVal(tracer_nsp::R2)==blackParcel,quiteLongTime);
-	chassisStop();
-	chassisRotate(newDir);
+	chassis.stop();
+	chassis.rotate(newDir);
 	//最基本的旋转结束判断,TODO:根据当前节点来设置判断条件
-	WAIT_FOR(tracer[dirFront].onPath==1 && tracer[dirRight].onPath==1 ,quiteLongTime);
-	chassisStop();
-	chassisMove(dirFront,speedHigh);
+	if(newNode==rightTurn){
+		WAIT_FOR(tracer[dirFront].readSensorVal(L1)==blackParcel && \
+			tracer[dirRight].readSensorVal(L1)==blackParcel ,quiteLongTime);
+	}else if(newNode==horizontalLine){
+		WAIT_FOR(tracer[dirFront].readSensorVal(L1)==blackParcel && \
+			tracer[dirBack].readSensorVal(L1)==blackParcel ,quiteLongTime);
+	}
+	chassis.stop();
+	chassis.move(dirFront,speedHigh);
+	HAL_Delay(500);
 	return 1;
 }
 
@@ -89,33 +54,17 @@ status_t turnLeft(plainNode_t newNode,uint32_t timeout){
 
 
 status_t goThroughWasteLand(uint32_t timeout){
-  chassisMove(dirFront,speedHigh);
+  chassis.move(dirFront,speedHigh);
   WAIT_FOR(tracer[dirFront].onPath==0,wasteLandTime);
-  onTrail=0;
-  chassisMove(dirFront,superDash);
+  chassis.onTrail=0;
+  chassis.move(dirFront,superDash);
   //借由路过的曲线顶点为参照，或者干脆通过预设延迟来抵达最下端的路径线
   HAL_Delay(timeout);
 
-  WAIT_FOR(hittingPath(tracer[dirFront],dirFront),quiteLongTime);
-	//WAIT_FOR(tracer[dirFront].readSensorVal(tracer_nsp::M)==blackParcel,quiteLongTime);
-  chassisMove(dirFront,speedLow);
-  WAIT_FOR(tracer[dirRight].onPath==1 || tracer[dirLeft].readSensorVal(tracer_nsp::M)==blackParcel ,decelerateTime);
-	//WAIT_FOR(tracer[dirRight].readSensorVal(tracer_nsp::M)==blackParcel,quiteLongTime);
-	
-
-	//抵达底线的判定
-	//WAIT_FOR(detectNode(patrol,horizontalLine),timeout);
-
-  chassisStop();
-  chassisRotate(dirRight);
-  //判断旋转完毕
-  WAIT_FOR(tracer[dirFront].onPath==1 && tracer[dirBack].onPath==1,quiteLongTime);
-  //WAIT_FOR(tracer[dirFront].readSensorVal(tracer_nsp::M)==blackParcel,rotateTime_90degree);
-  chassisStop();
-  onTrail=1;
-  chassisMove(dirFront,speedHigh);
+  WAIT_FOR(hittingPath(tracer[dirFront]),quiteLongTime);
+  chassis.move(dirFront,speedLow);
+  turnRight(horizontalLine,quiteLongTime);
   return 1;
-
 }
 
 status_t gotoLaunchNode(void){
@@ -134,7 +83,7 @@ status_t gotoBaseNode(keyNode_t preKeyNode,uint32_t timeout){
 	switch (preKeyNode)
 	{
 	case lowerRightTurning:
-		chassisMove(dirFront,speedHigh);
+		chassis.move(dirFront,speedHigh);
 
 		break;
 	case curlingDepositEasy:
@@ -149,14 +98,14 @@ status_t gotoBaseNode(keyNode_t preKeyNode,uint32_t timeout){
 	default:
 		return 0;
 	}
-	WAIT_FOR(leavingPath(tracer[dirFront],dirFront),timeout);
-	chassisMove(dirFront,speedLow);
+	WAIT_FOR(leavingPath(tracer[dirFront]),timeout);
+	chassis.move(dirFront,speedLow);
 	//WAIT_FOR(detectNode(patrol,T_crossing),decelerateTime);
 	WAIT_FOR(tracer[dirFront].onPath==1 && tracer[dirBack].onPath==1,quiteLongTime);
-	chassisStop();
-	chassisRotate(dirRight,speedHigh);
-	WAIT_FOR(hittingPath(tracer[dirLeft],dirRight),quiteLongTime);
-	chassisStop();
+	chassis.stop();
+	chassis.rotate(dirRight);
+	WAIT_FOR(hittingPath(tracer[dirLeft]),quiteLongTime);
+	chassis.stop();
 	return 1;
 }
 
@@ -164,14 +113,58 @@ status_t gotoCurlingDeposit(void){
 	turnRight(crossing,timeoutMax);
 	WAIT_FOR(0,curlingDepositeTime);
 
-
 	return 1;
 }
 
 __DEBUG void testPath(void){
 	/*测试阶段保留代码，下一步均调用chassis_t中集成的功能实现TODO:*/
+	using namespace tracer_nsp;
+	HAL_Delay(5000);
+	chassis.onTrail=1;
+	chassis.move(dirRight,speedHigh);
+	WAIT_FOR(tracer[dirBack].readSensorVal(R2)==blackParcel &&\
+		tracer[dirBack].readSensorVal(R1)==blackParcel,quiteLongTime);
+	chassis.stop();
+	chassis.move(dirBack,superDash);
+	chassis.onTrail=0;
+
+	HAL_Delay(wasteLandTime);
+	WAIT_FOR(tracer[dirBack].readSensorVal(M)==blackParcel,quiteLongTime);
+	chassis.move(dirBack,speedHigh);
+	WAIT_FOR(tracer[dirLeft].readSensorVal(M)==blackParcel && \
+				tracer[dirRight].readSensorVal(M)==blackParcel,quiteLongTime);
+	chassis.stop(500);
+
+	chassis.onTrail=1;
+	chassis.rotate(dirLeft,speedLow);
+	WAIT_FOR(tracer[dirLeft].readSensorVal(R1)==blackParcel && \
+			tracer[dirLeft].readSensorVal(M)==blackParcel && \
+			tracer[dirLeft].readSensorVal(L1)==blackParcel,500);
+	chassis.stop();
+	chassis.move(dirLeft,speedHigh);
+	HAL_Delay(2000);
+	WAIT_FOR(tracer[dirFront].readSensorVal(M)==blackParcel &&\
+			tracer[dirFront].readSensorVal(R1)==blackParcel,quiteLongTime);
+	chassis.stop();
+	chassis.move(dirFront,speedHigh);
+	
+	HAL_Delay(1000);
+
+
+	return;
+	/*
 	leaveStartLine();
 	patrol.setKeyNode(startLine);
+
+	WAIT_FOR(tracer[dirRight].readSensorVal(tracer_nsp::R2)==blackParcel,quiteLongTime);
+	chassis.stop();
+	chassis.move(dirRight,superDash);
+	HAL_Delay(wasteLandTime);
+	WAIT_FOR(tracer[dirFront].readSensorVal(tracer_nsp::L2)==blackParcel,quiteLongTime);
+	chassis.stop();
+	chassis.move(dirBack,speedHigh);
+	HAL_Delay(5000);
+
 
 	turnRight(rightTurn,quiteLongTime);
 	patrol.setKeyNode(upperRightTurning);
@@ -182,10 +175,35 @@ __DEBUG void testPath(void){
 	gotoLaunchNode();
 	patrol.setKeyNode(launchNode);
 	//patrol.setKeyNode(baseNode);
-
+*/
 }
 
-__DEBUG void testCurlingTake(void){
+__DEBUG void testPath_ver2(void){
+	using namespace timeout_nsp;
+	HAL_Delay(startLineWaitingTime);
+	chassis.onTrail=1;
+	chassis.move(dirRight,speedHigh);
 
+	WAIT_FOR(tracer[dirRight].onPath==0,quiteLongTime);
+	chassis.move(dirRight,speedLow);	
+	WAIT_FOR(tracer[dirBack].exactOnPath==1,decelerateTime);/*条件有点强*/
+	chassis.stop();
+	chassis.move(dirBack,speedHigh);
+	WAIT_FOR(tracer[dirBack].onPath==0,quiteLongTime);
+	chassis.onTrail=0;
+
+	HAL_Delay(wasteLandTime);
+	WAIT_FOR(tracer[dirBack].onPath==1,quiteLongTime);
+	chassis.move(dirBack,speedLow);	
+	WAIT_FOR(tracer[dirLeft].exactOnPath==1 || tracer[dirRight].exactOnPath==1,decelerateTime);/*条件有点强*/
+	chassis.stop();
+
+	chassis.onTrail=1;
+	chassis.move(dirLeft,speedHigh);
+	WAIT_FOR(tracer[dirFront].onPath==1,quiteLongTime);
+	chassis.stop();
+	chassis.move(dirFront,speedLow);
+	HAL_Delay(curlingDepositeTime);
 }
+
 
