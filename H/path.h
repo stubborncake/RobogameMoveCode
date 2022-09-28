@@ -34,7 +34,7 @@ status_t gotoBaseNode(keyNode_t preKeyNode,uint32_t timeout=timeoutDefault);
 
 /*测试寻径函数,被主函数调用*/
 __DEBUG void testPath(void);
-
+__DEBUG void testPath_ver2(void);
 /* Private defines -----------------------------------------------------------*/
 
 /* Class defines -----------------------------------------------------------*/

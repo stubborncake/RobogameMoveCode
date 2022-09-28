@@ -34,7 +34,7 @@ private:
 
 public:
     /*当前行进方向*/
-    direction_t headingDir;
+    uint8_t headingDir;
     /*是否在巡线上*/
     status_t onTrail;
     /*默认构造函数和解构函数*/
@@ -56,10 +56,15 @@ public:
     void detectCode(uint8_t attemptTimes=1);
     /*推壶*/
     void pushCurling(uint8_t argReserved=0);
+
     /*旋转指定角度，目前未实现*/
     __DEBUG void rotatebyDegree(direction_t newDir,uint8_t degree); 
+
     /*取壶操作，目前未实现*/
     __DEBUG void takeCurling(uint8_t argReserved=0);
+    /*调整方位，整合了各个方向和当前节点的判断*/
+    __DEBUG void adjustDirection(void);
+
     /*TODO:蜂鸣器鸣叫*/
     __DEBUG void buzz(uint8_t argReseved=0);
 

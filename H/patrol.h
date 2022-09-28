@@ -73,10 +73,7 @@ private:
 	uint8_t preKeyNode;
   /*是否开启检测*/
 	status_t updateOn;
-  /**/
-  /**/
-  /**/
-  /**/
+
 public:
 
 	patrol_t();
@@ -92,9 +89,6 @@ public:
   /*检测到指定平凡节点*/
   status_t detectPlainNode(plainNode_t newNode)const;
   friend status_t detectNode(patrol_t &patrol,plainNode_t newNode);
-
-  /*从preNode出发向newNode行进，整合了各个部分的运动方向*/
-	void headingFor(keyNode_t newKeyNode,uint32_t timeout=timeoutMax)const;
 
   /*输出当前平凡节点数值*/
   __DEBUG status_t printPlainNode(void);

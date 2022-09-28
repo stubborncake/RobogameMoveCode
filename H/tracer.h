@@ -14,7 +14,7 @@ extern "C" {
 
 
 /* Exported constants ------------------------------------------------------------*/
-static const uint8_t sensorCount=5;
+static const uint8_t sensorCount=5;/*每一个巡线模块有5个传感器*/
 
 /* Exported functions prototypes ---------------------------------------------*/
 
@@ -27,8 +27,7 @@ static const uint8_t sensorCount=5;
 
 using namespace tracer_nsp;
 
-
-class tracer_t_new{
+class tracer_t{
 private:
 	sensor_t sensor[sensorCount];
 
@@ -37,8 +36,7 @@ private:
 	/*是否开启路径检测*/
 	status_t calcStatus;
 
-	/*取得指定传感器的二值结果*/
-	status_t sensorVal(uint8_t order)const;
+
 	/*更新传感器数值*/
 	void updateSensorVal(void);
 	/*更新tracer的路径检测数值，包括onPath,hitPath,leavePath*/
@@ -48,23 +46,25 @@ private:
 	/*重置tracer统计的路线状况*/
 	void clearStatus(void);
 
-
 public:
 	/*该tracer是否在线上*/
 	status_t onPath;
-	/*该tracer是否刚从线外进入到线上,三个方向撞线*/
-	status_t hitPath[3];
-	/*该tracer是否刚从线上离开到线外,三个方向离线*/
-	status_t leavePath[3];
+	/*该tracer是否完美的在线上*/
+	status_t exactOnPath;
+	/*该tracer是否刚从线外进入到线上*/
+	status_t hitPath;
+	/*该tracer是否刚从线上离开到线外*/
+	status_t leavePath;
+	/*取得指定传感器的二值结果*/
+	__DEBUG status_t sensorVal(uint8_t order)const;
 
-
-	tracer_t_new();
-	~tracer_t_new();
+	tracer_t();
+	~tracer_t();
 
 	/*更新tracer所有数值*/
 	void updateData(void);	
 	/*update()的另一个形式*/
-	friend void updateTracer(tracer_t_new &newTracer);
+	friend void updateTracer(tracer_t &newTracer);
 	/*开启或关闭检测*/
 	void detectMode(status_t newStatus=2);
 
@@ -73,22 +73,30 @@ public:
 
 	/*更新置信系数，即过程中是否存在传感器失灵的情况*/
 	void setConfCoe(uint8_t sensorOrder,float newConfCoeVal);
-	/*取得撞线或站离线计算数值*/
-	status_t getPathStatus(hit_leave_t newStatus, direction_t newDir=dirAll)const;
-	/*getPath()的另两个形式*/
-	friend status_t hittingPath(tracer_t_new &tracer,direction_t newDir);
-	friend status_t leavingPath(tracer_t_new &tracer,direction_t newDir);
+
+	/*判断是否撞线或者离线*/
+	friend status_t hittingPath(tracer_t &tracer);
+	friend status_t leavingPath(tracer_t &tracer);
+	
 	/*清空所有数值*/
 	void clearData(void);
+
+	/*计算大致偏移角度*/
+	int8_t calcTrimDir(void);
+
 	/*调试用函数，输出相关变量*/
 	__DEBUG void printNewSensorVal(void)const;
 	__DEBUG void printSensorVal(void)const;
-	__DEBUG void printStatus(void)const;
+	__DEBUG status_t readSensorVal(uint8_t order)const;/*可以弃用了*/
 };
 
 /* Exported macro ------------------------------------------------------------*/
 
-extern tracer_t_new tracer[];
+extern tracer_t tracer[];
+
+/* Private defines -----------------------------------------------------------*/
+
+#define __TRACER
 
 #ifdef __cplusplus
 }
