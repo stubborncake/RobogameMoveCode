@@ -229,17 +229,31 @@ void motorMove(direction_t newdir, uint16_t newspeed)
 		SetTarget(CalSpeed, CalSpeed, CalSpeed, CalSpeed);
 	}
 }
-void motorTrim(direction_t newdir, uint16_t newspeed, float TrimIntensity)
+void motorTrim(direction_t newdir1,direction_t newdir2, uint16_t newspeed, float TrimIntensity)
 {
-	if (newdir == dirLeft)
+      if(newdir1=dirFront)
 	{
-		FrontMove();
-		SetTarget(CalSpeed * TrimIntensity, CalSpeed * TrimIntensity, CalSpeed, CalSpeed);
+	FrontMove();	
+	if (newdir2 == dirLeft) SetTarget(CalSpeed * TrimIntensity, CalSpeed * TrimIntensity, CalSpeed, CalSpeed);			
+	if (newdir2 == dirRight) SetTarget(CalSpeed, CalSpeed, CalSpeed * TrimIntensity, CalSpeed * TrimIntensity);			
 	}
-	if (newdir == dirRight)
+      if(newdir1=dirBack)
 	{
-		FrontMove();
-		SetTarget(CalSpeed, CalSpeed, CalSpeed * TrimIntensity, CalSpeed * TrimIntensity);
+	BackMove();	
+	if (newdir2 == dirLeft)  SetTarget(CalSpeed, CalSpeed, CalSpeed * TrimIntensity, CalSpeed * TrimIntensity);		
+	if (newdir2 == dirRight)  SetTarget(CalSpeed * TrimIntensity, CalSpeed * TrimIntensity, CalSpeed, CalSpeed);		
+	}
+     if(newdir1=dirRight)
+	{
+	RightMove();	
+	if (newdir2 == dirLeft) SetTarget(CalSpeed * TrimIntensity, CalSpeed , CalSpeed* TrimIntensity, CalSpeed);			
+	if (newdir2 == dirRight) SetTarget(CalSpeed, CalSpeed * TrimIntensity, CalSpeed, CalSpeed * TrimIntensity);			
+	}
+     if(newdir1=dirLeft)
+	{
+	LeftMove();	
+	if (newdir2 == dirLeft) SetTarget(CalSpeed, CalSpeed * TrimIntensity, CalSpeed, CalSpeed * TrimIntensity);				
+	if (newdir2 == dirRight) SetTarget(CalSpeed * TrimIntensity, CalSpeed , CalSpeed* TrimIntensity, CalSpeed);		
 	}
 }
 void motorRotate(direction_t newdir, uint16_t newspeed)
