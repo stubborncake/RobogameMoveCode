@@ -21,7 +21,8 @@ void SetTarget(int a,int b,int c,int d);//设置四个target数值
 
 //下面是包含方向和速度的控制
 void motorMove(direction_t newdir,uint16_t newspeed);
-void motorTrim(direction_t newdir,uint16_t newspeed,float TrimIntensity);
+/*newdir1代表行进方向;newdir2,left逆时针,right顺时针*/
+void motorTrim(direction_t newdir1,direction_t newdir2,uint16_t newspeed,float TrimIntensity);
 void motorRotate(direction_t newdir,uint16_t newspeed);
 void motorStop(void);
 
