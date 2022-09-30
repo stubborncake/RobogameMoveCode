@@ -26,10 +26,10 @@ void motorTrim(direction_t newdir1,direction_t newdir2,uint16_t newspeed,float T
 void motorRotate(direction_t newdir,uint16_t newspeed);
 void motorStop(void);
 
-/*双环PID控制移动距离，其中distance参数，2808为轮子旋转一整圈,切记每次双环PID移动结束，要手动把DoubleBegin全局变量置零*/
-void DoublePidMove(direction_t newdir,uint16_t distance);
-/*双环PID控制旋转距离，其中distance参数，2808为轮子旋转一整圈,切记每次双环PID移动结束，要手动把DoubleBegin全局变量置零*/
-void DoublePidRotate(direction_t newdir,uint16_t distance);
+/*双环PID控制移动距离，其中distance参数，2808为轮子旋转一整圈,切记每次双环PID移动要留足充足的EstimatedTime*/
+void DoublePidMove(direction_t newdir,uint16_t distance,uint16_t EstimatedTime);
+/*双环PID控制旋转距离，其中distance参数，2808为轮子旋转一整圈,切记每次双环PID移动要留足充足的EstimatedTime*/
+void DoublePidRotate(direction_t newdir,uint16_t distance,uint16_t EstimatedTime);
 /*TODO:测试双环pid算法*/
 
 
