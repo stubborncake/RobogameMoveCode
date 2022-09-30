@@ -276,7 +276,7 @@ void motorStop(void)
 	StopMove();
 }
 
-void DoublePidMove(direction_t newdir, uint16_t distance)
+void DoublePidMove(direction_t newdir, uint16_t distance,uint16_t EstimatedTime)
 {
 	DoubleBegin = 1; //双环开始指示变量置1
 	Again = 1;		 //双环第一次指示变量置1
@@ -289,9 +289,11 @@ void DoublePidMove(direction_t newdir, uint16_t distance)
 	if (newdir == dirRight)
 		RightMove();
 	SetTarget(distance, distance, distance, distance);
+	HAL_Delay(EstimatedTime);
+	DoubleBegin = 1;//双环开始指示变量置0
 }
 
-void DoublePidRotate(direction_t newdir, uint16_t distance)
+void DoublePidRotate(direction_t newdir, uint16_t distance,uint16_t EstimatedTime)
 {
 	DoubleBegin = 1; //双环开始指示变量置1
 	Again = 1;		 //双环第一次指示变量置1
@@ -300,4 +302,6 @@ void DoublePidRotate(direction_t newdir, uint16_t distance)
 	if (newdir == dirRight)
 		RightRotate();
 	SetTarget(distance, distance, distance, distance);
+	HAL_Delay(EstimatedTime);
+	DoubleBegin = 1;//双环开始指示变量置0
 }
