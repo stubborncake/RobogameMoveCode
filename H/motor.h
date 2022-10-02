@@ -32,6 +32,8 @@ void DoublePidMove(direction_t newdir,uint16_t distance);
 void DoublePidRotate(direction_t newdir,uint16_t distance);
 /*原地旋转180度*/
 void Rotate180degree(void);
+/*PF15引脚控制推壶，具体伸缩时间还需要实地测量*/
+void PushCurling(uint16_t EstimatedTime);
 /*TODO:测试双环pid算法*/
 
 
