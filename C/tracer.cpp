@@ -4,11 +4,10 @@
 
 tracer_t tracer[directionCount];
 
+/* Private functions definens ---------------------------------------------*/
+
+
 /* Exported functions definens ---------------------------------------------*/
-
-
-/* Class construction & destruction functions defines ---------------------------------------------*/
-
 
 /*tracer_t construction &destruction func*/
 
@@ -41,7 +40,7 @@ void tracer_t::updatePathStatus(void){
 
   status_t preOnPath=onPath;
   /*判读是否在线上*/
-  if(sensorVal(R1)+sensorVal(M)+sensorVal(L1)+sensorVal(R2)+sensorVal(L2)>=3){    
+  if(sensorVal(R1)+sensorVal(M)+sensorVal(L1)>=2){    
     onPath=1;
   }else{
     onPath=0;
@@ -143,20 +142,62 @@ void tracer_t::clearData(void){
 }
 
 int8_t tracer_t::calcTrimDir(void){
+#define COMPARE_SENSORS(__L2,__L1,__M,__R1,__R2) \
+  (sensorVals[L2]==__L2 && sensorVals[L1]==__L1 && sensorVals[M]==__M\
+   && sensorVals[R1]==__R1 && sensorVals[R2]==__R2)
+
   using namespace tracer_nsp;
   int8_t trimDir=0;
+  status_t sensorVals[sensorCount]={0};
+  for(uint8_t i=0;i<sensorCount;i++){
+    sensorVals[i]=sensorVal(i);
+  }
+
   /*如果在线上且没有完全在线上*/
   if(onPath==1 && exactOnPath==0){
-    if(sensorVal(L1)==whiteParcel)
-      trimDir++;
-    if(sensorVal(R2)==blackParcel)
-      trimDir+=2;
-    if(sensorVal(R1)==whiteParcel)
-      trimDir--;
-    if(sensorVal(L2)==blackParcel)
+    if(COMPARE_SENSORS(0,1,1,0,0)){
+      trimDir-=1;
+      return trimDir;
+    }
+    if(COMPARE_SENSORS(1,1,1,0,0)){
       trimDir-=2;
+      return trimDir;
+
+    }
+    if(COMPARE_SENSORS(1,1,0,0,0)){
+      trimDir-=3;
+      return trimDir;
+
+    }
+    if(COMPARE_SENSORS(0,0,1,1,0)){
+      trimDir+=1;
+      return trimDir;
+
+    }
+    if(COMPARE_SENSORS(0,0,1,1,1)){
+      trimDir+=2;
+      return trimDir;
+
+    }
+    if(COMPARE_SENSORS(0,0,0,1,1)){
+      trimDir+=3;
+      return trimDir;
+    }
+    /*
+    //old version of judging tracer type
+    if(sensorVal(L1)==whiteParcel)
+      trimDir+=2;
+    if(sensorVal(R2)==blackParcel)
+      trimDir+=1;
+    if(sensorVal(R1)==whiteParcel)
+      trimDir-=2;
+    if(sensorVal(L2)==blackParcel)
+      trimDir-=1;
+      */
   }
   return trimDir;
+
+#undef COMPARE_SENSORS
 }
 
 __DEBUG void tracer_t::printNewSensorVal(void)const{
@@ -177,9 +218,15 @@ __DEBUG void tracer_t::printSensorVal(void)const{
   printMsg(newMsg,msgSize);
 }
 
-__DEBUG status_t tracer_t::readSensorVal(uint8_t order)const{
-  return sensorVal(order);
+__DEBUG void tracer_t::printPathStatus(void)const{
+  const uint8_t msgSize=5;
+  uint8_t newMsg[msgSize]={0};
+  newMsg[0]=onPath+'0';
+  newMsg[1]=exactOnPath+'0';
+  newMsg[2]=hitPath+'0';
+  newMsg[3]=leavePath+'0';
+  newMsg[4]=' ';
+  printMsg(newMsg,msgSize);
 }
-
 
 /* Private functions defines ---------------------------------------------*/

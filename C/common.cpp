@@ -9,7 +9,7 @@
 /* Exported macro ------------------------------------------------------------*/
 
 status_t flagInitReady=0;
-
+status_t flagDetectCode=0;
 /* Private functions definations ---------------------------------------------*/
 
 /* Exported functions definations ---------------------------------------------*/
@@ -35,6 +35,29 @@ direction_t oppositeDir(uint8_t newDir){
         break;
     }
     return (direction_t)opDir;
+}
+
+direction_t getRightDir(direction_t newDir){
+	uint8_t rightDir=dirNowhere;
+    switch (newDir)
+    {
+    case dirFront:
+        rightDir=dirRight;
+        break;
+    case dirRight:
+        rightDir=dirBack;
+        break;
+    case dirLeft:
+        rightDir=dirFront;
+        break;
+    case dirBack:
+        rightDir=dirLeft;
+        break;
+    default:
+        rightDir=dirNowhere;
+        break;
+    }
+    return (direction_t)rightDir;
 }
 
 __DEBUG HAL_StatusTypeDef \

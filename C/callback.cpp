@@ -37,20 +37,6 @@ __DEBUG void printSensorValues(void)
   }
 }
 
-/*行进过程中调整方向,仅支持向前行进时对tracer[dirFront]进行检测*/
-__DEBUG void adjustDirFront(void){
-  using namespace tracer_nsp;
-  if(chassis.onTrail==0 || chassis.headingDir!=dirFront)
-    return;
-  if(tracer[dirFront].readSensorVal(L2)==blackParcel || tracer[dirFront].readSensorVal(R1)==whiteParcel ){
-    chassis.trim(dirLeft,trimIntensDefault);
-  }else if(tracer[dirFront].readSensorVal(R2)==blackParcel || tracer[dirFront].readSensorVal(L1)==whiteParcel){
-    chassis.trim(dirRight,trimIntensDefault);
-  }else{
-    chassis.trim(dirFront,trimIntensDefault);
-  }
-}
-
 /*根据接收字符串和长度构造message_t类型*/
 inline message_t buildMsgType(uint8_t *buff, uint8_t length)
 {
@@ -71,8 +57,9 @@ void tim6_callback(void)
 
   if(flagInitReady==0)
     return;
-  //counter.updateDate();
+  counter.updateDate();
   updateTracer();
+  //patrol.updatePlainNode();
 }
 
 void tim6_50period_callback(void)
@@ -80,8 +67,11 @@ void tim6_50period_callback(void)
   /*进入中断间隔为50ms*/
   if(flagInitReady==0)
     return;
+
+#ifndef STATIC_DEBUG
   updatePWM();
-  adjustDirFront();
+  chassis.adjustDirection();
+#endif
 }
 
 void USART2_IdleCallback(uint8_t *buff, uint8_t buffSize)
