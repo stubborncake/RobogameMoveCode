@@ -30,6 +30,8 @@ void motorStop(void);
 void DoublePidMove(direction_t newdir,uint16_t distance);
 /*双环PID控制旋转距离，其中distance参数，2808为轮子旋转一整圈,切记每次双环PID移动结束，要手动把DoubleBegin全局变量置零*/
 void DoublePidRotate(direction_t newdir,uint16_t distance);
+/*原地旋转180度*/
+void Rotate180degree(void);
 /*TODO:测试双环pid算法*/
 
 
