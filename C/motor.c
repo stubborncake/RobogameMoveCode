@@ -317,3 +317,10 @@ void Rotate180degree()
 	HAL_Delay(6650);
 	motorStop();
 }
+
+void PushCurling(uint16_t EstimatedTime)
+{
+HAL_GPIO_WritePin(GPIOF,PUSH_Pin,GPIO_PIN_SET);
+HAL_Delay(EstimatedTime);
+HAL_GPIO_WritePin(GPIOF,PUSH_Pin,GPIO_PIN_RESET);
+}
