@@ -87,7 +87,7 @@ public:
 	/*调试用函数，输出相关变量*/
 	__DEBUG void printNewSensorVal(void)const;
 	__DEBUG void printSensorVal(void)const;
-	__DEBUG status_t readSensorVal(uint8_t order)const;/*可以弃用了*/
+	__DEBUG void printPathStatus(void)const;
 };
 
 /* Exported macro ------------------------------------------------------------*/

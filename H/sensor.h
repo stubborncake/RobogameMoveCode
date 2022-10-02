@@ -10,9 +10,13 @@
 extern "C" {
 #endif
 	
-static const float valThreholdDefault=0.6;
-static const uint8_t valCacheMaxDefault=5;
+/* Exported constants ------------------------------------------------------------*/
+
+static const float valThreholdDefault=0.8;
+static const uint8_t valCacheMaxDefault=10;
 static const float confidenceCoeMaxDefault=1;/*old version of class tracer_t required*/
+
+/* Class defines -----------------------------------------------------------*/
 
 class sensor_t
 {
@@ -59,6 +63,8 @@ public:
 	/*取得最近一次的检测值*/
 	__DEBUG status_t getNewVal(void)const;
 };
+
+/* Private defines -----------------------------------------------------------*/
 
 #define __SENSOR
 	

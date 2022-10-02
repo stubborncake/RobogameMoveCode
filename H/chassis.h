@@ -12,8 +12,8 @@ extern "C" {
 
 
 /* Exported constants ------------------------------------------------------------*/
-static const uint8_t speedMaxDefault=90;
-static const uint8_t armHeightDefault=0;
+static const uint8_t speedMaxDefault=200;
+static const uint8_t armHeightDefault=5;
 
 /* Exported functions prototypes ---------------------------------------------*/
 
@@ -41,9 +41,14 @@ public:
     chassis_t();
     ~chassis_t();
     /*直线向指定方向前进，目前不清楚能否向左右或者后方行进*/
-    void move(direction_t newDir,uint8_t targetSpeed=speedHigh);
+    void move(direction_t newDir=dirFront,uint8_t targetSpeed=speedHigh);
+    /*直线定距离移动,TODO是否有必要在完成后停顿一段时间*/
+    void moveDistance(direction_t newDir,uint16_t distance,uint32_t timeout=moveDistanceTime);
     /*原地旋转*/
     void rotate(direction_t newDir,uint8_t targetSpeed=speedHigh);
+    /*旋转指定角度，目前未实现*/
+    __DEBUG void rotatebyDegree(direction_t newDir=dirLeft,uint8_t degree=180); 
+
     /*行进过程中微调方向*/
     void trim(direction_t newDir,uint8_t trimIntensity=trimIntensDefault);
     /*停止运动（移动或者旋转）*/
@@ -53,15 +58,13 @@ public:
     /*升高或者降低机械臂*/
     void raiseArm(tracer_nsp::up_down_t newDir, uint8_t distance);
     /*检测条形码或者冰壶颜色*/
-    void detectCode(uint8_t attemptTimes=1);
-    /*推壶*/
-    void pushCurling(uint8_t argReserved=0);
+    status_t detectCode(uint8_t attemptTimes=1)const;
+    /*推壶操作，需要利用PF15的output*/
+    void pushCurling(uint8_t argReserved=0)const;
 
-    /*旋转指定角度，目前未实现*/
-    __DEBUG void rotatebyDegree(direction_t newDir,uint8_t degree); 
 
-    /*取壶操作，目前未实现*/
-    __DEBUG void takeCurling(uint8_t argReserved=0);
+    /*取壶操作*/
+    __DEBUG status_t takeCurling(uint8_t argReserved=0);
     /*调整方位，整合了各个方向和当前节点的判断*/
     __DEBUG void adjustDirection(void);
 

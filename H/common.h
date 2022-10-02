@@ -10,15 +10,15 @@ extern "C"
 #endif
 
 	/* Exported constants ------------------------------------------------------------*/
-
+	/*TODO为了减小代码容量，将常量改成define*/
 	static const uint8_t msgSizeDefault = 10; /*调试用的信息最大长度*/
-	static const uint8_t directionCount = 4;  /*这个世界有四个方向*/
+	static const int directionCount = 4;  /*这个世界有四个方向*/
 	static const uint8_t argCountMax = 3;	  /*指令的参数最多有3个*/
 
 	/*速度常量，待定TODO:*/
-	static const uint8_t superDash = 160;
-	static const uint8_t speedHigh = 100;
-	static const uint8_t speedLow = 50;
+	static const uint8_t superDash = 120;
+	static const uint8_t speedHigh = 80;
+	static const uint8_t speedLow = 30;
 	static const float trimIntensDefault = 0.8; /*微调时两侧轮子速度之比*/
 
 	/*预设各个阶段运动的大致时间，TODO:设定最大timeout,例如原地旋转90度的所需时间*/
@@ -27,14 +27,19 @@ extern "C"
 	static const uint32_t timeoutMax = 0x0fffffff; /*最大超时参数，对于比赛时间而言即无穷，
 														在输入过程中会因为计算量过大导致问题*/
 	static const uint16_t waitforDelayTime = 0x04; /*waitFor函数的周期延时常量*/
+	static const uint32_t moveDistanceTime=2000;
+	static const uint32_t detectInterval=300;
+	static const uint32_t pushCurlingTime=400;
 	namespace timeout_nsp
 	{
 		static const uint32_t initTime = 100;
-		static const uint32_t startLineWaitingTime = 5000;
-		static const uint32_t wasteLandTime = 20000;
+		static const uint32_t startLineWaitingTime =5000;
+		static const uint32_t leavingStartLineTime=5000;
+		static const uint32_t upperTurningTime = 11000;
+		static const uint32_t wasteLandTime = 15000;
 		static const uint32_t rotateTime_90degree = 3500;
 		static const uint32_t rotateTime_180degree = 7000;
-		static const uint32_t decelerateTime = 3000;
+		static const uint32_t decelerateTime = 2000;
 		static const uint32_t curlingDepositeTime = 1500;
 		static const uint32_t quiteLongTime = 15000;
 	}
@@ -66,8 +71,8 @@ extern "C"
 		};
 		enum up_down_t
 		{
-			up = 1,
-			down = 0,
+			up = 0,
+			down = 1,
 		};
 		enum hit_leave_t
 		{
@@ -118,11 +123,15 @@ extern "C"
 	extern UART_HandleTypeDef huart3;
 	/*类对象和硬件是否初始化完毕，用于避免callback在未初始化之前进入中断*/
 	extern status_t flagInitReady;
-
+	/*是否检测到了正确的冰壶*/
+	extern status_t flagDetectCode;
 	/* Exported functions prototypes ---------------------------------------------*/
 
 	/*取得当前方向的反方向*/
 	direction_t oppositeDir(uint8_t newDir);
+	/*取得当前方向的右边的方向*/
+	direction_t getRightDir(direction_t newDir);
+
 	/*自定义的调试输出函数，不能像printf一样输出更多类型的数值*/
 	HAL_StatusTypeDef printMsg(uint8_t *newMsg, uint8_t msgSize = msgSizeDefault, UART_HandleTypeDef printUart = huart3, uint32_t timeout = timeoutDefault);
 	/*直接输出一段文字方便调试,似乎不支持函数重载*/
@@ -162,7 +171,7 @@ TODO:使用函数指针完成定义*/
 
 #define __DEBUG /*调试用的函数或者变量标记*/
 
-#define STATIC_DEBUG (1) /*让小车在静止时进行调试*/
+//#define STATIC_DEBUG (1) /*让小车在静止时进行调试*/
 
 #define BACKUP_PLAN /*备用方案*/
 
