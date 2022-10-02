@@ -301,3 +301,15 @@ void DoublePidRotate(direction_t newdir, uint16_t distance)
 		RightRotate();
 	SetTarget(distance, distance, distance, distance);
 }
+
+void Rotate180degree()
+{
+	PID_Value_Init();
+	motorStop();
+	HAL_Delay(500);
+	LeftRotate();
+	SetFourPWM(0,0,0,0);
+	SetTarget(120,120,120,120);
+	HAL_Delay(6650);
+	motorStop();
+}
