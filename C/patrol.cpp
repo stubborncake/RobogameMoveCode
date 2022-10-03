@@ -18,29 +18,18 @@ inline void setSelectorGPIO(GPIO_PinState outA,GPIO_PinState outB){
 
 }
 
-inline direction_t getRightDir(direction_t newDir){
-	uint8_t rightDir=dirNowhere;
-    switch (newDir)
-    {
-    case dirFront:
-        rightDir=dirRight;
-        break;
-    case dirRight:
-        rightDir=dirBack;
-        break;
-    case dirLeft:
-        rightDir=dirFront;
-        break;
-    case dirBack:
-        rightDir=dirLeft;
-        break;
-    default:
-        rightDir=dirNowhere;
-        break;
-    }
-    return (direction_t)rightDir;
+inline uint8_t getOnpathMask(uint8_t newDir){
+	uint8_t pathMask=0;
+	direction_t currDirFront=(direction_t)newDir;
+	direction_t currDirRight=getRightDir(currDirFront);
+	direction_t currDir[directionCount]={currDirFront,currDirRight,oppositeDir(currDirRight),oppositeDir(currDirFront)};
+	/*取得当前前进方向的相对方向数据*/
+	for(uint8_t i=0;i<directionCount;i++){
+		pathMask+=(uint8_t)(tracer[(uint8_t)currDir[i]].onPath);
+		pathMask*=2;
+	}
+	return pathMask;
 }
-
 /* Class functions defines ---------------------------------------------*/
 
 /*Selector_t functions defines---------------------------------------------*/
@@ -115,36 +104,14 @@ patrol_t::~patrol_t(){
 }
 
 void patrol_t::updatePlainNode(void){
-	/*原先算法，代码量过大，用于校对
-	PLAIN_NODE_SET(0,0,0,0,nowhere);
-	PLAIN_NODE_SET(1,0,0,0,frontOnly);
-	PLAIN_NODE_SET(0,0,1,0,backOnly);
-	PLAIN_NODE_SET(0,1,0,0,rightOnly);
-	PLAIN_NODE_SET(0,0,0,1,leftOnly);
-	PLAIN_NODE_SET(1,0,1,0,straightLine);
-	PLAIN_NODE_SET(0,1,0,1,horizontalLine);
-	PLAIN_NODE_SET(0,1,1,0,rightTurn);
-	PLAIN_NODE_SET(0,0,1,1,leftTurn);
-	PLAIN_NODE_SET(1,1,1,0,rightFork);
-	PLAIN_NODE_SET(1,0,1,1,leftFork);
-	PLAIN_NODE_SET(0,1,1,1,T_crossing);
-	PLAIN_NODE_SET(1,1,1,1,crossing);
-*/
-
+	/*行进方向的节点类型*/
 	if(updateOn==tracer_nsp::off)
 		return;
 	
 	/*用uint8_t的四个比特表示front, right, left, back的onpath二值*/
-	/*行进方向的节点类型*/
+	uint8_t pathMask=getOnpathMask(chassis.headingDir);
+
 	/*由于keil不支持2进制的表示，故只能计算后用十进制表示*/
-	uint8_t pathMask=0;
-	direction_t currDirFront=(direction_t)chassis.headingDir;
-	direction_t currDirRight=getRightDir(currDirFront);
-	direction_t currDir[directionCount]={currDirFront,currDirRight,oppositeDir(currDirRight),oppositeDir(currDirFront)};
-	for(uint8_t i=0;i<directionCount;i++){
-		pathMask+=tracer[currDir[i]].onPath;
-		pathMask*=2;
-	}
 	switch(pathMask){
 		case (0):
 			currPlainNode=nowhere;

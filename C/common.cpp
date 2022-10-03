@@ -60,6 +60,11 @@ direction_t getRightDir(direction_t newDir){
     return (direction_t)rightDir;
 }
 
+direction_t getLeftDir(direction_t newDir){
+  return getRightDir(oppositeDir(newDir));
+}
+
+
 __DEBUG HAL_StatusTypeDef \
 printMsg(uint8_t *newMsg,uint8_t msgSize,UART_HandleTypeDef printUart,uint32_t timeout){
   if(sizeof(newMsg)<msgSize)
@@ -92,14 +97,14 @@ void Delay_us(uint16_t us)
 }
 
 status_t motorInit(void){
-  //PWM���ʹ��
+  //PWM init
 	HAL_TIM_PWM_Start(&htim4,TIM_CHANNEL_1);
 	HAL_TIM_PWM_Start(&htim4,TIM_CHANNEL_2);
 	HAL_TIM_PWM_Start(&htim4,TIM_CHANNEL_3);
 	HAL_TIM_PWM_Start(&htim4,TIM_CHANNEL_4);
-	//PID��ز�����ʼ��
+	//PID value init
 	PID_Value_Init();
-	//������ʹ��
+	//encode inite
 	HAL_TIM_Encoder_Start(&htim1,TIM_CHANNEL_1);
 	HAL_TIM_Encoder_Start(&htim1,TIM_CHANNEL_2);
 	HAL_TIM_Encoder_Start(&htim2,TIM_CHANNEL_1);

@@ -13,7 +13,7 @@ chassis_t chassis;
 inline float calcTrimDIntensity(int8_t trimDir){
     /*线性换算的相关参数变量*/
     static const float lowBound=0.8;
-    static const uint8_t trimDirMax=6;
+    static const uint8_t trimDirMax=3;
     static const float linerUnit=(1-lowBound)/trimDirMax;
 
     float trimIntensity=0;
@@ -38,13 +38,16 @@ chassis_t::~chassis_t()
     halt();
 }
 
-void chassis_t::move(direction_t newDir, uint8_t targetSpeed)
+void chassis_t::move(direction_t newDir, uint8_t targetSpeed,uint32_t timeout)
 {
     if (newDir == dirNowhere || newDir == dirAll)
         return;
     headingDir = newDir;
     moveSpeed = MIN(targetSpeed, speedMax);
     motorMove(newDir, moveSpeed);
+    if(timeout>0){
+        HAL_Delay(timeout);
+    }
 }
 
 void chassis_t::moveDistance(direction_t newDir,uint16_t distance,uint32_t timeout){
@@ -57,7 +60,7 @@ void chassis_t::moveDistance(direction_t newDir,uint16_t distance,uint32_t timeo
 }
 
 
-void chassis_t::rotate(direction_t newDir, uint8_t targetSpeed)
+void chassis_t::rotate(direction_t newDir, uint8_t targetSpeed,uint32_t timeout)
 {
     if (headingDir != dirNowhere)
         return;
@@ -65,6 +68,9 @@ void chassis_t::rotate(direction_t newDir, uint8_t targetSpeed)
     {
         rotateSpeed = MIN(targetSpeed, speedMax);
         motorRotate(newDir, rotateSpeed);
+    }
+    if(timeout>0){
+        HAL_Delay(timeout);
     }
 }
 
@@ -118,13 +124,15 @@ void chassis_t::raiseArm(tracer_nsp::up_down_t newDir, uint8_t distance)
     if (distanceCalc != 0)
     {
         sendCommadbyRaw(armRaiseCmd, newDir, distanceCalc);
+        HAL_Delay(distanceCalc*300);
+        /*测试机械臂抬升过程中的延迟情况，是否可以和下一步的移动同时进行TODO*/
     }
 }
 
 status_t chassis_t::detectCode(uint8_t attemptTimes)const
 {
     /*根据参数进行多次的条形码检测尝试*/
-    for(int i=0;i<attemptTimes;i++){
+    for(uint8_t i=0;i<attemptTimes;i++){
         sendCommadbyRaw(detectCodeCmd);
         HAL_Delay(detectInterval);
     }
@@ -136,23 +144,23 @@ status_t chassis_t::detectCode(uint8_t attemptTimes)const
     }
 }
 
-void chassis_t::pushCurling(uint8_t argReserved)const
+void chassis_t::pushCurling(uint32_t timeout)const
 {    
     /*推壶操作*/
-    HAL_GPIO_WritePin(PUSH_GPIO_Port,PUSH_Pin,GPIO_PIN_SET);
-    HAL_Delay(pushCurlingTime);
-    HAL_GPIO_WritePin(PUSH_GPIO_Port,PUSH_Pin,GPIO_PIN_RESET);    
+
+    HAL_GPIO_WritePin(PUSH_A_GPIO_Port,PUSH_A_Pin,GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(PUSH_B_GPIO_Port,PUSH_B_Pin,GPIO_PIN_SET);//注意此处方向
+    HAL_Delay(timeout);		
+    HAL_GPIO_WritePin(PUSH_A_GPIO_Port,PUSH_A_Pin,GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(PUSH_B_GPIO_Port,PUSH_B_Pin,GPIO_PIN_RESET);
 }
 
 status_t chassis_t::takeCurling(uint8_t argReserved)
 {
     /*测试阶段跳过检测判断*/
-    raiseArm(up,5);/*上下的enum类型和距离待定TODO*/
-    HAL_Delay(2000);
-    return 1;
 
-#ifndef __DEBUG
-    status_t flag=detectCode();
+#ifdef __DEBUG
+    status_t flag=detectCode(5);
     if(flag==1){
         raiseArm(up,5);
     }

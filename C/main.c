@@ -27,15 +27,14 @@
 /* USER CODE BEGIN Includes */
 #include "common.h"
 #include "path.h"
-#include "pid.h"
-#include "motor.h"
+#include "tracer.h"
+#include "chassis.h"
+#include "connectivity.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 
-int target1,target2,target3,target4;
-int DoubleBegin,Again;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -101,25 +100,9 @@ int main(void)
   MX_USART2_UART_Init();
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
-	//PWMÊä³öÊ¹ÄÜ
-	HAL_TIM_PWM_Start(&htim4,TIM_CHANNEL_1);
-	HAL_TIM_PWM_Start(&htim4,TIM_CHANNEL_2);
-	HAL_TIM_PWM_Start(&htim4,TIM_CHANNEL_3);
-	HAL_TIM_PWM_Start(&htim4,TIM_CHANNEL_4);
-	//PIDÏà¹Ø²ÎÊı³õÊ¼»¯
-	PID_Value_Init();
-	//±àÂëÆ÷Ê¹ÄÜ
-	HAL_TIM_Encoder_Start(&htim1,TIM_CHANNEL_1);
-	HAL_TIM_Encoder_Start(&htim1,TIM_CHANNEL_2);
-	HAL_TIM_Encoder_Start(&htim2,TIM_CHANNEL_1);
-	HAL_TIM_Encoder_Start(&htim2,TIM_CHANNEL_2);
-	HAL_TIM_Encoder_Start(&htim3,TIM_CHANNEL_1);
-	HAL_TIM_Encoder_Start(&htim3,TIM_CHANNEL_2);
-	HAL_TIM_Encoder_Start(&htim8,TIM_CHANNEL_1);
-	HAL_TIM_Encoder_Start(&htim8,TIM_CHANNEL_2);
-	//¶¨Ê±Æ÷ÖĞ¶ÏÊ¹ÄÜ	
+	//å¯åŠ¨æ—¶é’Ÿä¸­æ–­
 	HAL_TIM_Base_Start_IT(&htim6);
-	//Ïà¹ØÍ¨ĞÅ³õÊ¼»¯
+	//å¯åŠ¨uart2çš„ç©ºé—²æ¥æ”¶
 	HAL_NVIC_EnableIRQ(USART2_IRQn);
 	HAL_NVIC_SetPriority(USART2_IRQn,3,3);
 	__HAL_UART_ENABLE_IT(&huart2,UART_IT_RXNE);
@@ -132,29 +115,37 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 	
   /*initialize motor related variables*/
-  DoubleBegin=0;
-  Again=0;
-  target1=target2=target3=target4=0;
-  SetFourPWM(0,0,0,0);
-  StopMove();
+  motorInit();
+  /*tracer_t & patrol_t initialization*/
+  tracerInit();
+ 
+#ifdef __DEBUG
+  printText("START\t"); /*start testing*/
+#endif
 
-  /*²âÊÔ²¿·ÖÂ·¾¶*/
-  testPath();
-  /*Ö±½ÓÍ£Ö¹£¬???³öÖ÷º¯Êı*/
-  Error_Handler();
+#if (STATIC_DEBUG==0)
+  testPath_ver3();/*å•é¡¹è°ƒè¯•å‡½æ•°*/
+  //testPath_ver2(); /*å•é¡¹è°ƒè¯•å‡½æ•°*/
+  Error_Handler(); /*æµ‹è¯•ç»“æŸåç›´æ¥åœæ­¢å·¥ä½œï¼Œä¸è¿›å¾ªç¯*/
+#endif
 
+  while (1)/*infinite loop*/
+  {
+#if (STATIC_DEBUG==1) /*è®©å°è½¦åœ¨é™æ­¢æ—¶è°ƒè¯•*/   
+    static uint8_t testDir=dirFront;
+    //patrol.printPlainNode();
+    //tracer[testDir].printSensorVal();
+    //tracer[testDir].printPathStatus();
+    //testDir=getRightDir((direction_t)testDir);
+    testDir=chassis.detectCode(10);
+    if(testDir==1){
+      chassis.raiseArm(tracer_nsp::up,3);
+      HAL_Delay(1000);
+      chassis.raiseArm(tracer_nsp::down,3);
+    }
+    HAL_Delay(2000);
 
-  while (1)
-  {			
-		
-		/*
-		//Ë«»·Ğ§¹û²âÊÔ´úÂë
-		FrontMove();
-		DoubleBegin=1;
-		Again=1;
-		target1=target2=target3=target4=2808;//enc=2808ÊÇÍâÈ¦ÂÖ×ÓĞı×ªÒ»ÕûÈ¦
-		HAL_Delay(4000);	
-		*/	
+#endif
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -203,6 +194,7 @@ void SystemClock_Config(void)
 
 /* USER CODE BEGIN 4 */
 
+
 /* USER CODE END 4 */
 
 /**
@@ -213,9 +205,8 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
+  tracerDestrcut();/*ä¿é™©èµ·è§ï¼Œæ‰‹åŠ¨è§£æ„æ‰€æœ‰ç±»å¯¹è±¡*/  
   __disable_irq();
-  tracerDestrcut();/*½â¹¹??ÓĞµÄÀà¶ÔÏó£¬ÑÏ½÷Æğ¼û*/
-
   while (1)
   {
   }

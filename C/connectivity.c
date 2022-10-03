@@ -27,9 +27,11 @@ status_t receiveCommand(message_t newMsg)
 	{
 		//检测到了正确的条形码，需要进行取壶操作
 		/*TODO:检测到正确冰壶信息后的取壶操作*/
-#ifdef STATIC_DEBUG
+#ifdef __NOTHING
 		uint8_t newMsg[] = "Code Detected\t";
 		printMsg(newMsg);
+		if(newMsg.argList[0]==1)
+			flagDetectCode=1;
 #endif
 		flagDetectCode=1;
 		break;
