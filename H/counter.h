@@ -12,12 +12,14 @@ extern "C" {
 
 
 /* Exported constants ------------------------------------------------------------*/
+
 static const uint8_t intervalDefault=1;
 
 /* Exported functions prototypes ---------------------------------------------*/
 
 
 /* Class defines -----------------------------------------------------------*/
+
 class counter_t
 {
 private:

@@ -29,9 +29,11 @@ enum plainNode_t{
 };
 
 /*关键节点，即巡线模块的定位节点*/
+
 enum keyNode_t{
+  
   startLine=0,
-  upperRightTurning=1,
+  upperRightTurning=1,/*
   lowerRightTurning=2,
   baseNode=3,
   crossroadLeft=4,
@@ -41,7 +43,7 @@ enum keyNode_t{
   curlingDepositHard=8, 
   launchNode=9,
   lostInNowhere=(uint8_t)(-1),
-
+*/
 };
 
 

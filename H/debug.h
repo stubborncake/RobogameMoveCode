@@ -20,6 +20,17 @@ extern "C" {
 
 
 /* Private defines -----------------------------------------------------------*/
+#define __DEBUG /*调试用的函数或者变量标记*/
+
+#define STATIC_DEBUG (0) /*让小车在静止时进行调试*/
+
+#define BACKUP_PLAN (1) /*备用方案*/
+
+#if (BACKUP_PLAN==1)
+
+#define STATE_EASY_CURLING (0)
+
+#endif
 
 #define __DEBUG_RESERVED
 

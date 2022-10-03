@@ -33,6 +33,7 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "string.h"
+
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -53,11 +54,6 @@ extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim4;
 extern TIM_HandleTypeDef htim6;
 extern TIM_HandleTypeDef htim8;
-
-extern int DoubleBegin;//�ж��Ƿ����΢���Ƕ�˫����ȫ�ֱ�����0�ǣ�1��
-extern int Again;//�ж��Ƿ���һ�ν���˫�����飬��ζ���Ϊ�˲���˫�����ȶ��ԵĴ���
-
-extern int test;
 
 /* USER CODE END EC */
 
@@ -90,6 +86,10 @@ void Error_Handler(void);
 #define m41_GPIO_Port GPIOC
 #define m42_Pin GPIO_PIN_3
 #define m42_GPIO_Port GPIOC
+#define PUSH_A_Pin GPIO_PIN_15
+#define PUSH_A_GPIO_Port GPIOF
+#define PUSH_B_Pin GPIO_PIN_0
+#define PUSH_B_GPIO_Port GPIOG
 #define SENSOR0_Pin GPIO_PIN_1
 #define SENSOR0_GPIO_Port GPIOD
 #define SENSOR1_Pin GPIO_PIN_2
@@ -107,6 +107,17 @@ void Error_Handler(void);
 #define LED_Pin GPIO_PIN_5
 #define LED_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
+
+/*
+UART2 - respberry
+  transmit 
+  receive
+UART3 - PC
+  transmit 
+  receive
+
+
+*/
 
 /* USER CODE END Private defines */
 
