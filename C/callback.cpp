@@ -68,7 +68,7 @@ void tim6_50period_callback(void)
   if(flagInitReady==0)
     return;
 
-#ifndef STATIC_DEBUG
+#if (STATIC_DEBUG==0)
   updatePWM();
   chassis.adjustDirection();
 #endif
@@ -76,7 +76,7 @@ void tim6_50period_callback(void)
 
 void USART2_IdleCallback(uint8_t *buff, uint8_t buffSize)
 {
-  const uint8_t length = MIN(argCountMax, buffSize - 1);
+  //const uint8_t length = MIN(argCountMax, buffSize - 1);
 #ifdef __DEBUG
   if(buff[0]==detectCodeAns){
     flagDetectCode=1;

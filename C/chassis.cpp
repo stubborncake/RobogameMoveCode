@@ -132,6 +132,8 @@ void chassis_t::raiseArm(tracer_nsp::up_down_t newDir, uint8_t distance)
 status_t chassis_t::detectCode(uint8_t attemptTimes)const
 {
     /*根据参数进行多次的条形码检测尝试*/
+    HAL_Delay(3000);
+    /*由于摄像头图像的延迟，需要等待至少2s才能传回即使图像*/
     for(uint8_t i=0;i<attemptTimes;i++){
         sendCommadbyRaw(detectCodeCmd);
         HAL_Delay(detectInterval);
@@ -192,7 +194,7 @@ __DEBUG void chassis_t::adjustDirection(void){
     /*取得前进方向的前后两个tracer*/
     direction_t opDir=oppositeDir(headingDir);  
 
-    trimDir+=tracer[headingDir].calcTrimDir();
+    trimDir+=(tracer[headingDir].calcTrimDir());
     trimDir+=tracer[opDir].calcTrimDir();
     trimIntensity=calcTrimDIntensity(trimDir);
 

@@ -124,8 +124,9 @@ int main(void)
 #endif
 
 #if (STATIC_DEBUG==0)
-  testPath_ver3();/*单项调试函数*/
-  //testPath_ver2(); /*单项调试函数*/
+  //testPath_ver2();/*单项调试函数*/
+  testPath_ver3();/*集成的类对象-全程调试函数*/
+  //testPath_ver4(); /*全程调试函数*/
   Error_Handler(); /*测试结束后直接停止工作，不进循环*/
 #endif
 
