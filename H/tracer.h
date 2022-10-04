@@ -71,7 +71,7 @@ public:
 	/*开启或关闭撞线计算*/
 	void calcStatusMode(status_t newStatus=2);
 
-	/*更新置信系数，即过程中是否存在传感器失灵的情况*/
+	/*更新置信系数，即过程中是否存在传感器失灵的情况,未使用*/
 	void setConfCoe(uint8_t sensorOrder,float newConfCoeVal);
 
 	/*判断是否撞线或者离线*/

@@ -28,7 +28,9 @@ extern "C" {
 
 #if (BACKUP_PLAN==1)
 
-#define STATE_EASY_CURLING (0)
+#define EASY_CURLING_NODE_1 (1)
+#define HARD_CURLING_NODE_1 (4)
+#define HARD_CURLING_NODE_2 (5)
 
 #endif
 
