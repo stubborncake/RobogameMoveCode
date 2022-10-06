@@ -26,7 +26,6 @@ status_t receiveCommand(message_t newMsg)
 	case detectCodeAns:
 	{
 		//检测到了正确的条形码，需要进行取壶操作
-		/*TODO:检测到正确冰壶信息后的取壶操作*/
 #ifdef __NOTHING
 		uint8_t newMsg[] = "Code Detected\t";
 		printMsg(newMsg);
@@ -63,8 +62,10 @@ void raiseArmCmd(status_t newDir, uint8_t distance){
 }
 
 /*backup plan for communication with respberry: send raw uint8_t*/
-__DEBUG HAL_StatusTypeDef sendCommadbyRaw(command_t newCmd,uint8_t arg1,uint8_t arg2){
+HAL_StatusTypeDef sendCommadbyRaw(command_t newCmd,uint8_t arg1,uint8_t arg2){
 	uint8_t newMsg[3]={(uint8_t)newCmd,arg1,arg2};
-	return HAL_UART_Transmit(&huart2, newMsg, 3, timeoutDefault);;
+
+	return HAL_UART_Transmit(&huart2, newMsg, 3, timeoutDefault);
+	/*添加多次发送的指令*/
 }
 

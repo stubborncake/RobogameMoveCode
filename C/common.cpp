@@ -96,46 +96,6 @@ void Delay_us(uint16_t us)
   SysTick->VAL = 0x00;
 }
 
-status_t motorInit(void){
-  //PWM init
-	HAL_TIM_PWM_Start(&htim4,TIM_CHANNEL_1);
-	HAL_TIM_PWM_Start(&htim4,TIM_CHANNEL_2);
-	HAL_TIM_PWM_Start(&htim4,TIM_CHANNEL_3);
-	HAL_TIM_PWM_Start(&htim4,TIM_CHANNEL_4);
-	//PID value init
-	PID_Value_Init();
-	//encode inite
-	HAL_TIM_Encoder_Start(&htim1,TIM_CHANNEL_1);
-	HAL_TIM_Encoder_Start(&htim1,TIM_CHANNEL_2);
-	HAL_TIM_Encoder_Start(&htim2,TIM_CHANNEL_1);
-	HAL_TIM_Encoder_Start(&htim2,TIM_CHANNEL_2);
-	HAL_TIM_Encoder_Start(&htim3,TIM_CHANNEL_1);
-	HAL_TIM_Encoder_Start(&htim3,TIM_CHANNEL_2);
-	HAL_TIM_Encoder_Start(&htim8,TIM_CHANNEL_1);
-	HAL_TIM_Encoder_Start(&htim8,TIM_CHANNEL_2);
-
-  DoubleBegin=0;
-  Again=0;
-  target1=target2=target3=target4=0;
-  SetFourPWM(0,0,0,0);
-  StopMove();
-  return 1;
-}
-
-status_t tracerInit(void){
-  status_t flag=1;
-  tracerSelector.setCurrDir(dirFront);
-  patrol.switchMode(tracer_nsp::on);
-  patrol.setKeyNode(startLine);
-  for(uint8_t i=0;i<directionCount;i++){
-    tracer[i].clearData();
-    tracer[i].detectMode(tracer_nsp::on);
-    tracer[i].calcStatusMode(tracer_nsp::on);
-  }
-  HAL_Delay(10);
-  flagInitReady=1;
-  return flag;
-}
 
 status_t tracerDestrcut(void){
   tracerSelector.~selector_t();
@@ -144,4 +104,18 @@ status_t tracerDestrcut(void){
     tracer[i].~tracer_t();
   }
   return 1;
+}
+
+void lostTrace_Handler(void){
+
+#ifndef __DEBUG
+  uint8_t flag=0;
+  flag=path.adjustBacktoTrace();  
+  if(flag==1){
+    return;//成功矫正了回来
+  }else{
+      //没有矫正回来
+  }
+#endif
+
 }

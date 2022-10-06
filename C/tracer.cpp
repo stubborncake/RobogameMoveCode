@@ -156,44 +156,37 @@ int8_t tracer_t::calcTrimDir(void){
   /*如果在线上且没有完全在线上*/
   if(onPath==1 && exactOnPath==0){
     if(COMPARE_SENSORS(0,1,1,0,0)){
-      trimDir-=1;
+      trimDir-=8;
       return trimDir;
     }
     if(COMPARE_SENSORS(1,1,1,0,0)){
-      trimDir-=2;
+      trimDir-=12;
       return trimDir;
-
     }
     if(COMPARE_SENSORS(1,1,0,0,0)){
-      trimDir-=3;
+      trimDir-=20;
       return trimDir;
-
+    }
+    if(COMPARE_SENSORS(1,0,0,0,0)){
+      trimDir-=30;
+      return trimDir;
     }
     if(COMPARE_SENSORS(0,0,1,1,0)){
-      trimDir+=1;
+      trimDir+=8;
       return trimDir;
-
     }
     if(COMPARE_SENSORS(0,0,1,1,1)){
-      trimDir+=2;
+      trimDir+=12;
       return trimDir;
-
     }
     if(COMPARE_SENSORS(0,0,0,1,1)){
-      trimDir+=3;
+      trimDir+=30;
       return trimDir;
     }
-    /*
-    //old version of judging tracer type
-    if(sensorVal(L1)==whiteParcel)
-      trimDir+=2;
-    if(sensorVal(R2)==blackParcel)
-      trimDir+=1;
-    if(sensorVal(R1)==whiteParcel)
-      trimDir-=2;
-    if(sensorVal(L2)==blackParcel)
-      trimDir-=1;
-      */
+    if(COMPARE_SENSORS(0,0,0,0,1)){
+      trimDir+=30;
+      return trimDir;
+    }
   }
   return trimDir;
 

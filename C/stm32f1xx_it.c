@@ -1,21 +1,21 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file    stm32f1xx_it.c
-  * @brief   Interrupt Service Routines.
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2022 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file    stm32f1xx_it.c
+ * @brief   Interrupt Service Routines.
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2022 STMicroelectronics.
+ * All rights reserved.</center></h2>
+ *
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ ******************************************************************************
+ */
 /* USER CODE END Header */
 
 /* Includes ------------------------------------------------------------------*/
@@ -63,15 +63,12 @@ extern TIM_HandleTypeDef htim6;
 extern UART_HandleTypeDef huart2;
 /* USER CODE BEGIN EV */
 
-/*临时接收的一个字符*/
-uint8_t res=0;
+/*临时接收的一个字*/
+uint8_t res = 0;
 /*接收字符串的指针*/
-uint8_t resBuffPtr=0;
+uint8_t resBuffPtr = 0;
 /*uart2的接收字符串*/
-uint8_t receiveBuff[receiveBuffSize]={0};
-
-/*鬼知道是什么东西*/
-int test=0;
+uint8_t receiveBuff[receiveBuffSize] = {0};
 
 /* USER CODE END EV */
 
@@ -221,24 +218,26 @@ void USART2_IRQHandler(void)
   /* USER CODE BEGIN USART2_IRQn 0 */
 
   /* USER CODE END USART2_IRQn 0 */
-  //HAL_UART_IRQHandler(&huart2);
+  HAL_UART_IRQHandler(&huart2);
   /* USER CODE BEGIN USART2_IRQn 1 */
   /*中断接收处理阶段,预设的IRQHandler被失能了*/
-	if(__HAL_UART_GET_FLAG(&huart2,UART_FLAG_RXNE) != RESET)
-	{
-		HAL_UART_Receive(&huart2,&res,1,timeoutDefault);		//将数据放入缓冲区
-		if(resBuffPtr < receiveBuffSize){
-			receiveBuff[resBuffPtr] = res;
-			resBuffPtr++;
-		}		
-		__HAL_UART_CLEAR_FLAG(&huart2,UART_FLAG_RXNE);
-	}
+  if (__HAL_UART_GET_FLAG(&huart2, UART_FLAG_RXNE) != RESET)
+  {
+    HAL_UART_Receive(&huart2, &res, 1, timeoutDefault); //将数据放入缓冲区
+    if (resBuffPtr < receiveBuffSize)
+    {
+      receiveBuff[resBuffPtr] = res;
+      resBuffPtr++;
+    }
+    __HAL_UART_CLEAR_FLAG(&huart2, UART_FLAG_RXNE);
+  }
 
-	if(__HAL_UART_GET_FLAG(&huart2,UART_FLAG_IDLE) != RESET){	//空闲中断,一帧数据接收完成
-		USART2_IdleCallback(receiveBuff,resBuffPtr);
+  if (__HAL_UART_GET_FLAG(&huart2, UART_FLAG_IDLE) != RESET)
+  { //空闲中断
+    USART2_IdleCallback(receiveBuff, resBuffPtr);
     clearReceiveBuff();
-		__HAL_UART_CLEAR_IDLEFLAG(&huart2);
-	}
+    __HAL_UART_CLEAR_IDLEFLAG(&huart2);
+  }
   /* USER CODE END USART2_IRQn 1 */
 }
 
@@ -258,35 +257,36 @@ void TIM6_IRQHandler(void)
 
 /* USER CODE BEGIN 1 */
 
-//������ʱ���жϣ�1msһ��
+//计时器中断函�?
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{	
+{
   /*
     72MHz/(1000*72)=1000Hz
     frequence=1000Hz
     Period value=1000
-    interrupt interval=1ms	
+    interrupt interval=1ms
   */
-  static uint8_t tick_50period=0;
+  static uint8_t tick_50period = 0;
 
-  if(htim==&htim6){
+  if (htim == &htim6)
+  {
     tim6_callback();
     tick_50period++;
-    if(tick_50period>=50){
-      tick_50period=0;
+    if (tick_50period >= 50)
+    {
+      tick_50period = 0;
       tim6_50period_callback();
     }
   }
-	if(htim==&htim6) 
-	{
-	}
 }
-	
-void clearReceiveBuff(void){
-  for(uint8_t i=0;i<receiveBuffSize;i++){
-    receiveBuff[i]=0;
+
+void clearReceiveBuff(void)
+{
+  for (uint8_t i = 0; i < receiveBuffSize; i++)
+  {
+    receiveBuff[i] = 0;
   }
-  res=0;
-  resBuffPtr=0;
+  res = 0;
+  resBuffPtr = 0;
 }
 /* USER CODE END 1 */

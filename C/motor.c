@@ -211,51 +211,50 @@ void motorMove(direction_t newdir, uint16_t newspeed)
 	if (newdir == dirFront)
 	{
 		FrontMove();
-		SetTarget(CalSpeed, CalSpeed, CalSpeed, CalSpeed);
 	}
 	if (newdir == dirBack)
 	{
 		BackMove();
-		SetTarget(CalSpeed, CalSpeed, CalSpeed, CalSpeed);
 	}
 	if (newdir == dirLeft)
 	{
 		LeftMove();
-		SetTarget(CalSpeed, CalSpeed, CalSpeed, CalSpeed);
 	}
 	if (newdir == dirRight)
 	{
-		RightMove();
-		SetTarget(CalSpeed, CalSpeed, CalSpeed, CalSpeed);
+		RightMove();		
 	}
+	SetTarget(CalSpeed, CalSpeed, CalSpeed, CalSpeed);
 }
+
 void motorTrim(direction_t newdir1,direction_t newdir2, uint16_t newspeed, float TrimIntensity)
 {
-      if(newdir1=dirFront)
+      if(newdir1==dirFront)
 	{
 	FrontMove();	
 	if (newdir2 == dirLeft) SetTarget(CalSpeed * TrimIntensity, CalSpeed * TrimIntensity, CalSpeed, CalSpeed);			
 	if (newdir2 == dirRight) SetTarget(CalSpeed, CalSpeed, CalSpeed * TrimIntensity, CalSpeed * TrimIntensity);			
 	}
-      if(newdir1=dirBack)
+      if(newdir1==dirBack)
 	{
 	BackMove();	
 	if (newdir2 == dirLeft)  SetTarget(CalSpeed, CalSpeed, CalSpeed * TrimIntensity, CalSpeed * TrimIntensity);		
 	if (newdir2 == dirRight)  SetTarget(CalSpeed * TrimIntensity, CalSpeed * TrimIntensity, CalSpeed, CalSpeed);		
 	}
-     if(newdir1=dirRight)
+     if(newdir1==dirRight)
 	{
 	RightMove();	
 	if (newdir2 == dirLeft) SetTarget(CalSpeed * TrimIntensity, CalSpeed , CalSpeed* TrimIntensity, CalSpeed);			
 	if (newdir2 == dirRight) SetTarget(CalSpeed, CalSpeed * TrimIntensity, CalSpeed, CalSpeed * TrimIntensity);			
 	}
-     if(newdir1=dirLeft)
+     if(newdir1==dirLeft)
 	{
 	LeftMove();	
 	if (newdir2 == dirLeft) SetTarget(CalSpeed, CalSpeed * TrimIntensity, CalSpeed, CalSpeed * TrimIntensity);				
 	if (newdir2 == dirRight) SetTarget(CalSpeed * TrimIntensity, CalSpeed , CalSpeed* TrimIntensity, CalSpeed);		
 	}
 }
+
 void motorRotate(direction_t newdir, uint16_t newspeed)
 {
 	if (newdir == dirLeft)
@@ -276,7 +275,9 @@ void motorStop(void)
 	StopMove();
 }
 
-void DoublePidMove(direction_t newdir, uint16_t distance,uint16_t EstimatedTime)
+/*2000是从十字中心向前移动的距离
+3300是横向移动一个十字中心的距离*/
+void DoublePidMove(direction_t newdir, uint16_t distance,uint32_t EstimatedTime)
 {
 	DoubleBegin = 1; //双环开始指示变量置1
 	Again = 1;		 //双环第一次指示变量置1
@@ -290,10 +291,11 @@ void DoublePidMove(direction_t newdir, uint16_t distance,uint16_t EstimatedTime)
 		RightMove();
 	SetTarget(distance, distance, distance, distance);
 	HAL_Delay(EstimatedTime);
-	DoubleBegin = 1;//双环开始指示变量置0
+	DoubleBegin=0;
+	StopMove();
 }
 
-void DoublePidRotate(direction_t newdir, uint16_t distance,uint16_t EstimatedTime)
+void DoublePidRotate(direction_t newdir, uint16_t distance,uint32_t EstimatedTime)
 {
 	DoubleBegin = 1; //双环开始指示变量置1
 	Again = 1;		 //双环第一次指示变量置1
@@ -303,24 +305,72 @@ void DoublePidRotate(direction_t newdir, uint16_t distance,uint16_t EstimatedTim
 		RightRotate();
 	SetTarget(distance, distance, distance, distance);
 	HAL_Delay(EstimatedTime);
-	DoubleBegin = 1;//双环开始指示变量置0
+	DoubleBegin=0;
+	StopMove();
 }
 
-void Rotate180degree()
+void Rotate180degree(direction_t newDir)
 {
 	PID_Value_Init();
 	motorStop();
 	HAL_Delay(500);
-	LeftRotate();
+	if(newDir==dirLeft){
+		LeftRotate();
+	}else{
+		RightRotate();
+	}
 	SetFourPWM(0,0,0,0);
 	SetTarget(120,120,120,120);
-	HAL_Delay(6650);
+	HAL_Delay(6600);/*init : 6650ms; test: 6600ms*/
 	motorStop();
 }
 
-void PushCurling(uint16_t EstimatedTime)
+void PushCurlingTrimBack(direction_t newdir)
 {
-HAL_GPIO_WritePin(GPIOF,PUSH_Pin,GPIO_PIN_SET);
-HAL_Delay(EstimatedTime);
-HAL_GPIO_WritePin(GPIOF,PUSH_Pin,GPIO_PIN_RESET);
+	PID_Value_Init();
+	motorStop();
+	HAL_Delay(500);
+	if(newdir==dirLeft) WRITE_PIN(OFF, ON, OFF, OFF, OFF, ON, OFF, OFF);				
+	if(newdir==dirRight) WRITE_PIN(OFF, OFF, ON, OFF, OFF, OFF, ON, OFF);
+	SetFourPWM(0,0,0,0);
+	SetTarget(100,100,100,100);
+	HAL_Delay(300);//还需测试
+	motorStop();
+}
+void PushCurlingTrimFront(direction_t newdir)
+{
+	PID_Value_Init();
+	motorStop();
+	HAL_Delay(500);
+	if(newdir==dirLeft) WRITE_PIN(ON, OFF, OFF, OFF, ON, OFF, OFF, OFF);				
+	if(newdir==dirRight) WRITE_PIN(OFF, OFF, OFF, ON, OFF, OFF, OFF, ON);
+	SetFourPWM(0,0,0,0);
+	SetTarget(100,100,100,100);
+	HAL_Delay(350);//还需测试
+	motorStop();
+}		
+void PushCurlingMoveFrontorBack(direction_t newdir)
+{
+	PID_Value_Init();
+	motorStop();
+	HAL_Delay(500);
+	if(newdir==dirFront) FrontMove();					
+	if(newdir==dirBack) BackMove();
+	SetFourPWM(0,0,0,0);
+	SetTarget(100,100,100,100);
+	HAL_Delay(1000);//还需测试
+	motorStop();
+}
+/*待整车撞上立柱调整位置后调用此函数开始推壶,参数代表Trim方向*/		
+void PushCurlingAllPeriod(direction_t newdir)
+{	
+	PushCurlingTrimBack(newdir);
+	//put down
+	PushCurlingMoveFrontorBack(dirBack);
+	/*此处插入一个抬爪子函数*/
+	//raise up
+
+	PushCurlingMoveFrontorBack(dirFront);
+	//PushCurling();
+	PushCurlingTrimFront(newdir);
 }

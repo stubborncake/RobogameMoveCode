@@ -26,6 +26,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "common.h"
+#include "plan.h"
+#include "initialize.h"
+/*following .h files are all in need in test process */
 #include "path.h"
 #include "tracer.h"
 #include "chassis.h"
@@ -102,7 +105,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
 	//启动时钟中断
 	HAL_TIM_Base_Start_IT(&htim6);
-	//启动uart2的空闲接收
+	//启动uart2的空闲接�?
 	HAL_NVIC_EnableIRQ(USART2_IRQn);
 	HAL_NVIC_SetPriority(USART2_IRQn,3,3);
 	__HAL_UART_ENABLE_IT(&huart2,UART_IT_RXNE);
@@ -124,9 +127,16 @@ int main(void)
 #endif
 
 #if (STATIC_DEBUG==0)
-  //testPath_ver2();/*单项调试函数*/
-  testPath_ver3();/*集成的类对象-全程调试函数*/
-  //testPath_ver4(); /*全程调试函数*/
+
+  #if (BACKUP_PLAN==0)
+    testPath_ver3(); /*全程调试函数,使用视觉*/
+  #elif(BACKUP_PLAN==1)
+    testPath_ver5();/*全程调试函数,不使用视觉，预先设定好冰壶位�?*/
+  #elif(BACKUP_PLAN==2)
+    curlingNodeInit();
+    testPath_ver6();/*全程调试函数,在开始时通过指定线接高压输入冰壶位置*/
+  #endif
+
   Error_Handler(); /*测试结束后直接停止工作，不进循环*/
 #endif
 
@@ -138,14 +148,16 @@ int main(void)
     //tracer[testDir].printSensorVal();
     //tracer[testDir].printPathStatus();
     //testDir=getRightDir((direction_t)testDir);
-    testDir=chassis.detectCode(10);
-    if(testDir==1){
-      chassis.raiseArm(tracer_nsp::up,3);
-      HAL_Delay(1000);
-      chassis.raiseArm(tracer_nsp::down,3);
-    }
-    HAL_Delay(2000);
+    if(chassis.detectCode(1)==1){
+      chassis.raiseArm(tracer_nsp::up,5);
+      HAL_Delay(2000);
+      chassis.raiseArm(tracer_nsp::down,5);
+      HAL_Delay(2000);
 
+    }else{
+      HAL_Delay(2000);
+    }
+    
 #endif
     /* USER CODE END WHILE */
 

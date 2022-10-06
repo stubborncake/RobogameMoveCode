@@ -1,5 +1,5 @@
 #include "pid.h"
-#include "main.h"
+#include "common.h"
 
 pid_type_def motor1_speed, motor1_position;
 pid_type_def motor2_speed, motor2_position;
@@ -109,7 +109,7 @@ void PID_clear(pid_type_def *pid)
 void PID_Value_Init()
 {
   //速度PID参数赋值
-  Kp_speed1 = Kp_speed2 = Kp_speed3 = Kp_speed4 = 10;
+  Kp_speed1 = Kp_speed2 = Kp_speed3 = Kp_speed4 = 12;
   Ki_speed1 = Ki_speed2 = Ki_speed3 = Ki_speed4 = 0.9;
   Kd_speed1 = Kd_speed2 = Kd_speed3 = Kd_speed4 = 0;
   //位置PID参数赋值

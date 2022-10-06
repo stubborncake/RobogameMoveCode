@@ -71,6 +71,8 @@ void tim6_50period_callback(void)
 #if (STATIC_DEBUG==0)
   updatePWM();
   chassis.adjustDirection();
+  path.detectFatalError();
+  
 #endif
 }
 
