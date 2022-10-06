@@ -59,17 +59,17 @@ public:
     void stop(uint32_t delayTime=timeoutDefault);
     /*停机*/
     void halt(void);
-    /* @brief 升高或者降低机械臂
+    /*  @brief 升高或者降低机械臂,无冰壶为0，有冰壶为5，发射时为7.
         @param distance: 机械臂移动距离，默认抬起高度为5，高难区冰壶高度为2 TODO
         @note 在抬起过程中不能再次发送该指令，否则会冲突
     */
-    void raiseArm(tracer_nsp::up_down_t newDir, uint8_t distance);
+    void raiseArm(tracer_nsp::up_down_t newDir, uint8_t distance,uint32_t delayTime=0);
     /*检测条形码或者冰壶颜色*/
     status_t detectCode(uint8_t attemptTimes=1)const;
     /*  @brief 推壶操作
         @param timeout: 在推出机械臂后等待时间，过长会导致气瓶漏气
     */
-    void pushCurling(uint32_t timeout=pushCurlingTime)const;
+    void pushCurling()const;
 
 
     /*取壶操作，目前看来不是很必要*/

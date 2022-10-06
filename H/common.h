@@ -12,10 +12,10 @@ extern "C"
 
 	/* Exported constants ------------------------------------------------------------*/
 
-	static const uint8_t msgSizeDefault = 10; /*调试用的信息最大长度*/
-	static const uint8_t directionCount = 4;  /*这个世界有四个方向*/
-	static const uint8_t argCountMax = 3;	  /*指令的参数最多有3个*/
-	static const uint8_t baselineNodeCount=6; /*基准线上的节点数，包括最左端的T字口*/
+	static const uint8_t msgSizeDefault = 10;	/*调试用的信息最大长度*/
+	static const uint8_t directionCount = 4;	/*这个世界有四个方向*/
+	static const uint8_t argCountMax = 3;		/*指令的参数最多有3个*/
+	static const uint8_t baselineNodeCount = 6; /*基准线上的节点数，包括最左端的T字口*/
 	/*时间常量单位一律为毫秒ms*/
 	/*速度常量，待定TODO:*/
 
@@ -27,36 +27,45 @@ extern "C"
 	static const uint8_t speedLow = 30;
 	/* @brief 微调时两侧轮子速度之比的默认值*/
 	static const float trimIntensDefault = 0.8;
-	
+
 	/* @brief 通信上面的默认超时毫秒常量*/
-	static const uint32_t timeoutDefault = 0x00ff; 
+	static const uint32_t timeoutDefault = 0x00ff;
 	/* @brief 最大超时参数，对于比赛时间而言即无穷*/
-	static const uint32_t timeoutMax = 0x0fffffff; 
-	/* @brief waitFor函数的周期延时常量*/													
+	static const uint32_t timeoutMax = 0x0fffffff;
+	/* @brief waitFor函数的周期延时常量*/
 	static const uint16_t waitforDelayTime = 0x04;
 	/* @brief 定距离移动的默认移动时间*/
-	static const uint32_t moveDistanceTime=2000;
+	static const uint32_t moveDistanceTime = 2000;
 	/* @brief 检测冰壶颜色的发送指令时间间隔*/
-	static const uint32_t detectInterval=300;
+	static const uint32_t detectInterval = 300;
 	/* @brief 发射冰壶时，继电器的给高压时间*/
-	static const uint32_t pushCurlingTime=600;
+	static const uint32_t pushCurlingTime = 600;
+	/*一个很长的时间，调试阶段没有确定timeout时使用*/
+	static const uint32_t quiteLongTime = 15000;
+	/*等待树莓派摄像头数据稳定的时间*/
+	static const uint32_t respberryTime_1 = 3000;
+	static const uint32_t respberryTime_2 = 7000;
+	/*发射冰壶时的延时时间*/
+	static const uint32_t pushCurlingWaitTime = 1000;
+	/*备用方案的虚假视觉测试等待时间*/
+	static const uint32_t fakeDetectingTime = 3000;
+	/*和寻径相关的时间常量*/
 	namespace timeout_nsp
 	{
-		static const uint32_t initTime = 100;
-		static const uint32_t startLineWaitingTime =5000;
-		static const uint32_t leavingStartLineTime=5000;
-		static const uint32_t upperTurningTime = 13000;
-		static const uint32_t guideLineTime=1800;
-		static const uint32_t wasteLandTime = 15000;
-		static const uint32_t rotateTime_90degree = 3500;
-		static const uint32_t rotateTime_180degree = 7000;
-		static const uint32_t decelerateTime = 2000;
-		static const uint32_t curlingDepositeTime = 1500;
-		static const uint32_t quiteLongTime = 15000;
-		static const uint32_t curlingIntervalTime=3000;
-		static const uint32_t passingForkTime=1000;
-		static const uint32_t easyCurlingTakeTime=2800;
-		static const uint32_t hardCurlingTakeTime=3800;
+		static const uint32_t initTime = 100;			   /*初始化类对象的时间*/
+		static const uint32_t startLineWaitingTime = 5000; /*在起点等待时间，调试时使用*/
+		static const uint32_t leavingStartLineTime = 2000; /*离开起点方框所需时间*/
+		static const uint32_t upperTurningTime = 13000;	   /*上端纵向巡线所需时间最大值*/
+		static const uint32_t guideLineTime = 1800;		   /*到达上端直角弯后，向下移动的巡线指导时间*/
+		static const uint32_t wasteLandTime = 15000;	   /*无巡线行进时间*/
+		static const uint32_t rotateTime_90degree = 3500;  /*原地旋转90度的最大时间*/
+		static const uint32_t rotateTime_180degree = 7000; /*原地旋转180度的最大时间*/
+		static const uint32_t decelerateTime = 2000;	   /*检测到节点后的减速时间*/
+		static const uint32_t curlingDepositeTime = 1500;  /*原地旋转180度的最大时间*/
+		static const uint32_t curlingIntervalTime = 3000;  /*两个岔口间移动所需最大时间*/
+		static const uint32_t passingForkTime = 1000;	   /*通过一个岔口所需最大时间*/
+		static const uint32_t easyCurlingTakeTime = 2800;  /*取简单冰壶的前进时间*/
+		static const uint32_t hardCurlingTakeTime = 4200;  /*取困难冰壶的前进时间*/
 
 	}
 
@@ -85,7 +94,7 @@ extern "C"
 			off = 0,
 			on = 1,
 		};
-		enum up_down_t	/*由于和机械臂的通信，保留最初的设计，历史遗留*/
+		enum up_down_t /*由于和机械臂的通信，保留最初的设计，历史遗留*/
 		{
 			up = 0,
 			down = 1,
@@ -96,7 +105,7 @@ extern "C"
 			hit = 1,
 		};
 
-		enum sensorOrder_t
+		enum sensorOrder_t /*巡线模块的传感器编号，从左到右为0到4*/
 		{
 			L2 = 0,
 			L1 = 1,
@@ -104,56 +113,71 @@ extern "C"
 			R1 = 3,
 			R2 = 4,
 		};
-		static const status_t blackParcel = 1;
-		static const status_t whiteParcel = 0;
+		static const status_t blackParcel = 1; /*黑色对应1*/
+		static const status_t whiteParcel = 0; /*白色对应0*/
 	}
 
 	/*指令类型*/
 	enum command_t
 	{
-		errorCmd = 0,/*在使用*/
-		moveCmd = 1, 
+		errorCmd = 0, /*发生错误，在使用*/
+		moveCmd = 1,
 		rotateCmd = 2,
 		trimCmd = 3,
 		stopCmd = 4,
 		pushCurlingCmd = 5,
-		armRaiseCmd = 6, 	/*在使用*/
-		detectCodeCmd = 7,	/*在使用*/
-		detectCodeAns = 8,	/*在使用*/
+		armRaiseCmd = 6,   /*机械臂上升或者下降，在使用*/
+		detectCodeCmd = 7, /*检测冰壶颜色，在使用*/
+		detectCodeAns = 8, /*检测到的颜色的应答，在使用*/
 		reservedCmd = 9,
 		testCmd = 10,
 	};
 
-#if (BACKUP_PLAN==0)
+#if (BACKUP_PLAN == 0)
 	/*基准线上的节点名称*/
-	enum baselineNode_t{
-		lowerRightTurning=0,
-		easyCurlingRight_1=1,
-		easyCurlingRight_2=2,		
-		launchRight=3,
-		hardCurling_1=3,
-		easyCurlingMide=4,
-		hardCurling_2=4,
-		launchLeft=5,
-		hardCurling_3=5,
-		deadend=6,
+	enum baselineNode_t
+	{
+		lowerRightTurning = 0,
+		easyCurlingRight_1 = 1,
+		easyCurlingRight_2 = 2,
+		launchRight = 3,
+		hardCurling_1 = 3,
+		easyCurlingMide = 4,
+		hardCurling_2 = 4,
+		launchLeft = 5,
+		hardCurling_3 = 5,
+		deadend = 6,
 	};
 
-#else
-	/*基准线上的节点名称*/
-	enum baselineNode_t{
-		lowerRightTurning=0,
-		easyCurlingRight_1=EASY_CURLING_NODE_1,
-		easyCurlingRight_2=2,		
-		launchRight=3,
-		hardCurling_1=HARD_CURLING_NODE_1,
-		easyCurlingMide=4,
-		hardCurling_2=HARD_CURLING_NODE_2,
-		launchLeft=5,
-		hardCurling_3=5,
-		deadend=6,
-	};
-
+#elif(BACKUP_PLAN == 1)
+/*基准线上的节点名称*/
+enum baselineNode_t
+{
+	lowerRightTurning = 0,
+	easyCurlingRight_1 = EASY_CURLING_NODE_1,
+	easyCurlingRight_2 = 2,
+	launchRight = 3,
+	hardCurling_1 = HARD_CURLING_NODE_1,
+	easyCurlingMide = 4,
+	hardCurling_2 = HARD_CURLING_NODE_2,
+	launchLeft = 5,
+	hardCurling_3 = 5,
+	deadend = 6,
+};
+#elif(BACKUP_PLAN == 2)
+enum baselineNode_t
+{
+	lowerRightTurning = 0,
+	easyCurlingRight_1 = 1,
+	easyCurlingRight_2 = 2,
+	launchRight = 3,
+	hardCurling_1 = 3,
+	easyCurlingMide = 4,
+	hardCurling_2 = 4,
+	launchLeft = 5,
+	hardCurling_3 = 5,
+	deadend = 6,
+};
 
 
 #endif
@@ -171,7 +195,7 @@ extern "C"
 	extern UART_HandleTypeDef huart2;
 	/*用于和电脑通信，单向传输调试信息*/
 	extern UART_HandleTypeDef huart3;
-	/*类对象和硬件是否初始化完毕，用于避免callback在未初始化之前进入中断*/
+	/*类对象和硬件是否初始化完毕，用于避免callback在未初始化之前进入中断，TODO放置到init.h中*/
 	extern status_t flagInitReady;
 	/*是否检测到了正确的冰壶*/
 	extern status_t flagDetectCode;
@@ -190,39 +214,43 @@ extern "C"
 	HAL_StatusTypeDef printMsg(uint8_t *newMsg, uint8_t msgSize = msgSizeDefault, UART_HandleTypeDef printUart = huart3, uint32_t timeout = timeoutDefault);
 	/*	@breif 直接输出一段文字方便调试,似乎不支持函数重载
 		@param newMsg: 标准字符串型
-		@example  printText("hello"）;		
+		@example  printText("hello"）;
 	*/
 	HAL_StatusTypeDef printText(const char *newMsg);
-	/*延迟函数，实现微秒级别的延迟功能,或许需要一些修饰符，例如__STATIC_FORCEINLINE*/
+	/*	@brief 延迟函数，实现微秒级别的延迟功能,
+		@param us: 延时的微妙数
+		@note 或许需要一些修饰符，例如__STATIC_FORCEINLINE*/
 	void Delay_us(uint16_t us);
 
-	/*初始化PID相关的参数*/
-	status_t motorInit(void);
-	/*初始化包括tracer,selector,patrol等类对象*/
-	status_t tracerInit(void);
 	/*解构包括tracer,selector,patrol等类对象*/
 	status_t tracerDestrcut(void);
+	/*在基准线附近脱线*/
+	void lostTrace_Handler(void);
 
 /* Private defines -----------------------------------------------------------*/
 
 /*__USED is unable to download into the chip*/
 /*__STATIC_FORCEINLINE is not so necessary*/
 
-/*	@brief 条件等待函数，在不满足条件时将主进程挂起
+/*	@brief 条件等待函数，在不满足条件时将主进程挂起。挂起中如果脱线，则进入矫正函数
 	@param __exp: 关于巡线的表达式，为0则挂起主进程，为1时退出挂起状态
 	@param __timeout: 最大挂起时间，到时间后无条件退出挂起状态,必须为const
 	@todo 使用函数指针实现该效果
 */
-#define WAIT_FOR(__exp, __timeout)                                            \
-	do                                                                        \
-	{                                                                         \
-		static const uint16_t delayCountMax = (__timeout) / waitforDelayTime; \
-		uint16_t delayCount = 0;                                              \
-		while ((__exp) == 0 && delayCount < delayCountMax)                    \
-		{                                                                     \
-			HAL_Delay(waitforDelayTime);                                      \
-			delayCount++;                                                     \
-		}                                                                     \
+#define WAIT_FOR(__exp, __timeout)                                     \
+	do                                                                 \
+	{                                                                  \
+		const uint16_t delayCountMax = (__timeout) / waitforDelayTime; \
+		uint16_t delayCount = 0;                                       \
+		while ((__exp) == 0 && delayCount < delayCountMax)             \
+		{                                                              \
+			if (flag_fatalError == FATAL_ERROR)                        \
+			{                                                          \
+				lostTrace_Handler();                                   \
+			}                                                          \
+			HAL_Delay(waitforDelayTime);                               \
+			delayCount++;                                              \
+		}                                                              \
 	} while (0)
 
 #define MIN(__a, __b) ((__a) < (__b) ? (__a) : (__b))

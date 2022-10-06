@@ -22,12 +22,8 @@ extern "C" {
 */
 void moveUntilNode(plainNode_t newNode,uint32_t timeout,direction_t newDir,uint8_t speed=speedHigh);
 
-/*全程测试函数,被主函数调用*/
-__DEBUG void testPath_ver2(void);
-/*全程测试函数，为path_t的封装类*/
-__DEBUG void testPath_ver4(void);
-/*单项调试函数，同样为主函数调用*/
-__DEBUG void testPath_ver3(void);
+
+
 /* Private defines -----------------------------------------------------------*/
 
 /* Class defines -----------------------------------------------------------*/
@@ -51,8 +47,6 @@ private:
     void gothroughWasteLand(void);
     /*抵达基准线*/
     void landonBaseline(void);
-    /*在十字交叉口上原地旋转180度*/
-    void turnBack(direction_t newDir=dirRight);
     /*后退一段距离，放置冰壶，并向前*/
     void putdownCurling(void);
 
@@ -64,11 +58,13 @@ private:
 */
     void goPassForks(direction_t newDir,uint8_t forkCount=1);
 
-
 public:
 
     path_t();
     ~path_t();
+    /*在十字交叉口上原地旋转180度*/
+    /*理应是private函数，在调试阶段需要虚假旋转TODO*/
+    void turnBack(direction_t newDir=dirRight);
 
     /*从出发点出发，经过第一个右转弯，无巡线的情况下到达基准线，停止*/
     void gotoBaseline(void);
@@ -81,22 +77,44 @@ public:
 
     /*向前移动，取回一个低难度的冰壶，并退回基准线*/
     void goTakeEasyCurling(void);
+    /*  @brief 前进并检测是否是正确的简单冰壶;
+            如是则取回，若不是则直接退回基准线.
+        @retval flag 是否是正确冰壶*/
+    status_t goDetectEasyCurling(void);
+    /*  @brief 前进并检测是否是正确的困难冰壶;
+            如是则取回，若不是则直接退回基准线.
+        @retval flag 是否是正确冰壶*/
+    status_t goDetectHardCurling(void);
+
     /*向前移动，取回一个高难度的冰壶，并退回基准线,TODO确定前进的时间*/
     void goTakeHardCurling(void);
     /*向前移动，发射冰壶，并退回基准线*/
     /*TODO:后续可能在发射时偏转一定角度*/
-    void goLaunchCurling(uint8_t launchNode=launchRight,status_t flag_lastShot=0);
+    void goLaunchCurling(uint8_t launchNode=launchRight,status_t flag_trimLaunch=0,status_t flag_lastShot=0);
+    /*检测是否脱线了*/
+    status_t detectFatalError(void);
+    /*在脱线之后尝试矫正回到线上*/
+    status_t adjustBacktoTrace(void);
+    /*在到达一个十字节点后矫正位置，使得四个tracer都在线上*/
+    status_t adjustOnCrossing(void);
 
 };
 
 /* Exported macro ------------------------------------------------------------*/
 
-extern uint8_t baseLineNode;
-
 /*关于路径的最高层次的类*/
 extern path_t path;
 
+/* Private defines ------------------------------------------------------------*/
+
 #define __PATH
+
+#define LAST_SHOT (1)
+
+#define STRAIGHT_LAUNCH (0)
+#define TRIM_LAUNCH (1)
+
+#define LOST_TRACE (1)
 
 #ifdef __cplusplus
 }

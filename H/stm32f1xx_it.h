@@ -39,7 +39,7 @@
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
 
-/*接收数据的字符串最大长度*/
+/*接收数据的字符串�?大长�?*/
 static const uint8_t receiveBuffSize=5;
 
 /* USER CODE END EC */

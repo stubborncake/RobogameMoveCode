@@ -15,26 +15,38 @@ extern "C" {
 
 /* Exported macro ------------------------------------------------------------*/
 
+extern uint8_t flag_fatalError;
 
 /* Exported functions prototypes ---------------------------------------------*/
 
 
 /* Private defines -----------------------------------------------------------*/
-#define __DEBUG /*调试用的函数或者变量标记*/
+
+#define FATAL_ERROR (1)
 
 #define STATIC_DEBUG (0) /*让小车在静止时进行调试*/
 
-#define BACKUP_PLAN (1) /*备用方案*/
+#define BACKUP_PLAN (0) /*备用方案*/
 
-#if (BACKUP_PLAN==1)
+#if(BACKUP_PLAN==0)
 
-#define EASY_CURLING_NODE_1 (1)
-#define HARD_CURLING_NODE_1 (4)
-#define HARD_CURLING_NODE_2 (5)
+    #define VISION_MODULE (1)
+
+#elif (BACKUP_PLAN==1)
+
+    #define EASY_CURLING_NODE_1 (2)
+    #define HARD_CURLING_NODE_1 (3)
+    #define HARD_CURLING_NODE_2 (5)
+
+#elif(BACKUP_PLAN==2)
+
+    extern uint8_t bp_easyCurlingNode;
+    extern uint8_t bp_hardCurlingNode_1;
+    extern uint8_t bp_hardCurlingNode_2;
 
 #endif
 
-#define __DEBUG_RESERVED
+#define __DEBUG /*调试用的函数或者变量标记*/
 
 #ifdef __cplusplus
 }

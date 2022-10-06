@@ -45,16 +45,6 @@ extern "C" {
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
 
-
-extern int target1,target2,target3,target4;
-
-extern TIM_HandleTypeDef htim1;
-extern TIM_HandleTypeDef htim2;
-extern TIM_HandleTypeDef htim3;
-extern TIM_HandleTypeDef htim4;
-extern TIM_HandleTypeDef htim6;
-extern TIM_HandleTypeDef htim8;
-
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
@@ -70,6 +60,12 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define NODE_INPUT_0_Pin GPIO_PIN_0
+#define NODE_INPUT_0_GPIO_Port GPIOF
+#define NODE_INPUT_1_Pin GPIO_PIN_1
+#define NODE_INPUT_1_GPIO_Port GPIOF
+#define NODE_INPUT_2_Pin GPIO_PIN_2
+#define NODE_INPUT_2_GPIO_Port GPIOF
 #define m11_Pin GPIO_PIN_6
 #define m11_GPIO_Port GPIOF
 #define m12_Pin GPIO_PIN_7
@@ -109,6 +105,7 @@ void Error_Handler(void);
 /* USER CODE BEGIN Private defines */
 
 /*
+gpio settings
 UART2 - respberry
   transmit 
   receive
