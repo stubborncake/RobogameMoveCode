@@ -1,3 +1,13 @@
+/**
+ * @file connectivity.c
+ * @author team_BlackStar
+ * @brief 通信相关函数
+ * @version 0.2
+ * @date 2022-10-06
+ * 
+ * @copyright Copyright (c) 2022
+ * @warning message_t的封装目前有点小问题，目前使用裸发送uint8_t型字符串的函数
+ */
 #include "connectivity.h"
 
 HAL_StatusTypeDef sendCommand(message_t &newCmd, const uint8_t argCount)

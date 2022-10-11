@@ -1,3 +1,13 @@
+/**
+ * @file initialize.cpp
+ * @author Swayee2022 (malygosa@mail.ustc.edu.cn)
+ * @brief 初始化电机相关的硬件和巡线相关的类对象
+ * @version 1.0
+ * @date 2022-10-06
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
 #include "initialize.h"
 
 #include "tracer.h"
@@ -53,7 +63,6 @@ status_t curlingNodeInit(void){
     nodeInput[__order] = HAL_GPIO_ReadPin( \
         NODE_INPUT_##__order##_GPIO_Port,  \
         NODE_INPUT_##__order##_Pin);       \
-                                           \
   } while (0)
 
 #if(BACKUP_PLAN==2)

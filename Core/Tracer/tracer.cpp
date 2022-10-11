@@ -1,3 +1,16 @@
+/**
+ * @file tracer.cpp
+ * @author Swayee2022 (malygosa@mail.ustc.edu.cn)
+ * @brief 巡线模块的类方法
+ * 
+ * 巡线模块的初始化，更新adc二值，开启或者关闭浮点计算，计算偏移角度等
+ * 
+ * @version 1.0
+ * @date 2022-10-06
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
 
 #include "tracer.h"
 /* Exported macro ------------------------------------------------------------*/

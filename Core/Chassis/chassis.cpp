@@ -1,3 +1,13 @@
+/**
+ * @file chassis.cpp
+ * @author Swayee2022 (malygosa@mail.ustc.edu.cn)
+ * @brief 地盘运动的类对象定义，集成了motor.c的代码实现
+ * @version 1.0
+ * @date 2022-10-06
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
 #include "chassis.h"
 #include "tracer.h"
 #include "motor.h"

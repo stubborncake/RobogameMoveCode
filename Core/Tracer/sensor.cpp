@@ -1,4 +1,18 @@
-
+/**
+ * @file sensor.cpp
+ * @author Swayee2022 (malygosa@mail.ustc.edu.cn)
+ * @brief 单个灰度传感器类方法
+ * 
+ * 传感器类对象的初始化，读取新的灰度数值，
+ * 历史数值的更新，历史数值阈值比较，
+ * 清空缓存区数值，设置置信系数（未使用）
+ * 
+ * @version 1.0
+ * @date 2022-10-06
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
 #include "sensor.h"
 
 using namespace tracer_nsp;

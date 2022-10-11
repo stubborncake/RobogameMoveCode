@@ -1,4 +1,16 @@
-
+/**
+ * @file callback.cpp
+ * @author Swayee2022 (malygosa@mail.ustc.edu.cn)
+ * @brief 回调函数
+ * 
+ * 计时器中断处理函数，串口接收的处理函数
+ * 
+ * @version 0.1
+ * @date 2022-10-06
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
 #include "callback.h"
 #include "connectivity.h"
 #include "counter.h"

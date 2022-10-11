@@ -1,3 +1,13 @@
+/**
+ * @file debug.cpp
+ * @author Swayee2022 (malygosa@mail.ustc.edu.cn)
+ * @brief 调试阶段的单项测试函数
+ * @version 0.5
+ * @date 2022-10-06
+ * 
+ * @copyright Copyright (c) 2022
+ * @warning 需要在debug.h中修改对应的宏定义，才可实现静止状态下的调试，否则可能车子会移动
+ */
 #include "common.h"
 #include "path.h"
 #include "chassis.h"
@@ -64,7 +74,3 @@ void testDetectCurling(void){
 }
 
 #endif
-
-
-
-

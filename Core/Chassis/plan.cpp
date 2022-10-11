@@ -1,3 +1,15 @@
+/**
+ * @file plan.cpp
+ * @author Swayee2022 (malygosa@mail.ustc.edu.cn)
+ * @brief 不同方案的路径实现过程，是path_t的方法的线性调用
+ * @version 1.4
+ * @date 2022-10-06
+ * @see https://github.com/Deagle-PrintStream/connectivity_merge/tree/project_struct_rebuild
+ * @see debug.h
+ * @copyright Copyright (c) 2022
+ * @note 目前根据规则，备用方案1和2均告失败，视觉方案理论可行，但是中途的错误率很高，机械臂指令发送失败是致命错误
+ * @warning 需要根据debug.h中的宏对应修改，否则代码块在编译阶段就被吞了，无返回
+ */
 #include "plan.h"
 #include "path.h"
 
