@@ -1,11 +1,30 @@
+/**
+ * @file motor.c
+ * @author stubborncake
+ * @brief 电机运动相关函数
+ * 
+ * DO NOT TRY TO UNDERSTAND IT, FEEL IT.
+ * 
+ * @version 1.0
+ * @date 2022-10-06
+ * @see https://github.com/stubborncake/RobogameMoveCode
+ * @copyright Copyright (c) 2022
+ * @warning 由于多次utf8-gbk之间转码的问题，原先的注释全部变成了乱码，且无法转回。故谨慎修改！
+ */
 #include "motor.h"
 #include "connectivity.h"
 #include "pid.h"
+#include "string.h"
 
 int target1, target2, target3, target4;
 int DoubleBegin, Again;
 
-//��ȡ��������ֵ
+/**
+ * @brief 读取编码器的结果
+ * 
+ * @param  TIMX 轮子对应的时钟
+ * @return int 时钟的计数值
+ */
 int Read_Encoder(int TIMX)
 {
 	int Encoder_TIM;

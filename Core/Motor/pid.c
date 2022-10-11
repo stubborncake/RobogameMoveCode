@@ -1,3 +1,16 @@
+/**
+ * @file pid.c
+ * @author stubborncake
+ * @brief PID算法相关函数
+ * 
+ * DO NOT TRY TO UNDERSTAND IT, FEEL IT.
+ * 
+ * @version 1.0
+ * @date 2022-10-06
+ * @see https://github.com/stubborncake/RobogameMoveCode
+ * @copyright Copyright (c) 2022
+ * @warning 由于多次utf8-gbk之间转码的问题，原先的注释全部变成了乱码，且无法转回。故谨慎修改！
+ */
 #include "pid.h"
 #include "common.h"
 

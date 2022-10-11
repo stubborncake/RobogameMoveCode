@@ -1,4 +1,26 @@
-
+/**
+ * @file common.h
+ * @author Swayee2022 (malygosa@mail.ustc.edu.cn)
+ * @brief 常量定义，类型定义，wait_for宏定义
+ * 
+ * 数组大小的常量定义，时间常量定义（待测），
+ * 方向类型定义，基准线上的节点名称enum类定义，
+ * 通信的指令enum定义，通信结构体定义，
+ * 全局标志类变量定义，flag_init表示是否硬件初始化完毕，
+ * flag_fatalError表示是否脱线需要矫正,
+ * 方向的转换函数，脱线处理函数,
+ * 条件等待宏定义函数
+ * 
+ * @version 1.1
+ * @date 2022-10-07
+ * @see https://github.com/Deagle-PrintStream/connectivity_merge/tree/project_struct_rebuild
+ * 
+ * @note all the other head files include common.h for type defines and global constants,
+ * 	common.h includes main.h for defines of GPIOs,
+ * 	common.h includes debug.h for macro defines about which path plan to compile
+ * @copyright Copyright (c) 2022
+ * 
+ */
 #ifndef __COMMON_H
 #define __COMMON_H
 /* Private includes ----------------------------------------------------------*/
@@ -188,7 +210,8 @@ extern "C"
 
 /*	@brief 条件等待函数，在不满足条件时将主进程挂起。挂起中如果脱线，则进入矫正函数
 	@param __exp: 关于巡线的表达式，为0则挂起主进程，为1时退出挂起状态
-	@param __timeout: 最大挂起时间，到时间后无条件退出挂起状态,必须为const
+	@param __timeout: 最大挂起时间，到时间后无条件退出挂起状态
+	@warning __timeout必须为const
 	@todo 使用函数指针实现该效果
 */
 #define WAIT_FOR(__exp, __timeout)                                     \
@@ -207,9 +230,11 @@ extern "C"
 		}                                                              \
 	} while (0)
 
-#define MIN(__a, __b) ((__a) < (__b) ? (__a) : (__b))
+#define MIN(__a, __b) \
+	((__a) < (__b) ? (__a) : (__b))
 
-#define MAX(__a, __b) ((__a) > (__b) ? (__a) : (__b))
+#define MAX(__a, __b) \
+	((__a) > (__b) ? (__a) : (__b))
 
 #define __COMMON
 
