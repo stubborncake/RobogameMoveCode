@@ -10,7 +10,7 @@ extern "C" {
 
 /* Private defines -----------------------------------------------------------*/
 
-#define FATAL_ERROR (1)
+#define FATAL_ERROR (1)	/*致命错误，目前表示在取壶区脱线*/
 
 #define STATIC_DEBUG (0) /*让小车在静止时进行调试*/
 
@@ -18,7 +18,8 @@ extern "C" {
 
 #if(BACKUP_PLAN==0)
 
-    #define VISION_MODULE (1)
+    #define VISION_MODULE (1)	/*开启视觉模块*/
+	//#define NEW_GRIPPER (1)	/*全新的机械爪，可以在下降后直接发射*/
 
 #elif (BACKUP_PLAN==1)
 

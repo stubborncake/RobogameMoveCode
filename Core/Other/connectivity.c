@@ -35,7 +35,7 @@ status_t receiveCommand(message_t newMsg)
 	case detectCodeAns:
 	{
 		//检测到了正确的条形码，需要进行取壶操作
-#ifdef __DEBUG
+#ifndef __DEBUG
 		uint8_t newInfor[] = "Code Detected\t";
 		printMsg(newInfor);
 		if(newMsg.argList[0]==1){
@@ -44,6 +44,10 @@ status_t receiveCommand(message_t newMsg)
 #else
 		flagDetectCode=1;
 #endif
+		break;
+	}
+	case reservedCmd:{
+		//接收到了预留的指令，可以用来作为确认指令
 		break;
 	}
 	default:{
@@ -56,26 +60,29 @@ status_t receiveCommand(message_t newMsg)
 	return flag;
 }
 
-void detectCmd(void){
-	message_t newCmd;
-	newCmd.command=detectCodeCmd;
-	newCmd.argList[0]=0;
-	sendCommand(newCmd,0);
+void detectCurlingCmd(void){
+	sendCommadbyRaw(detectCodeCmd,0);
 }
 
 void raiseArmCmd(status_t newDir, uint8_t distance){
-	message_t newCmd;
-	newCmd.command=armRaiseCmd;
-	newCmd.argList[0]=newDir;
-	newCmd.argList[1]=distance;
-	sendCommand(newCmd,2);
+	sendCommadbyRaw(armRaiseCmd, newDir, distance);
 }
 
-/*backup plan for communication with respberry: send raw uint8_t*/
 HAL_StatusTypeDef sendCommadbyRaw(command_t newCmd,uint8_t arg1,uint8_t arg2){
+	/*backup plan for communication with respberry: send raw uint8_t*/
 	uint8_t newMsg[3]={(uint8_t)newCmd,arg1,arg2};
+	HAL_StatusTypeDef flag=HAL_ERROR;
+	static const uint8_t attemptTime=5;
+	static const uint32_t retryInterval=100;
 
-	return HAL_UART_Transmit(&huart2, newMsg, 3, timeoutDefault);
-	/*添加多次发送的指令*/
+	/*如果uart没有返回成功标志，则多次尝试发送*/
+	for(uint8_t i=0;i<attemptTime;i++){
+		flag=HAL_UART_Transmit(&huart2, newMsg, 3, retryInterval);
+		if(flag==HAL_OK){
+			break;
+		}else{
+			HAL_Delay(retryInterval);
+		}
+	}
+	return flag;
 }
-

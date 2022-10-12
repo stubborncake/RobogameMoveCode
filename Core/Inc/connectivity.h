@@ -17,7 +17,7 @@ HAL_StatusTypeDef sendCommand(message_t newMsg);
 status_t receiveCommand(message_t newMsg);
 
 /*检测冰壶条形码指令*/
-void detectCmd(void);
+void detectCurlingCmd(void);
 /*机械臂上升或者下降指令*/
 void raiseArmCmd(status_t newDir, uint8_t distance);
 
