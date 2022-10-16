@@ -251,26 +251,26 @@ void motorTrim(direction_t newdir1,direction_t newdir2, uint16_t newspeed, float
       if(newdir1==dirFront)
 	{
 	FrontMove();	
-	if (newdir2 == dirLeft) SetTarget(CalSpeed * TrimIntensity, CalSpeed * TrimIntensity, CalSpeed, CalSpeed);			
-	if (newdir2 == dirRight) SetTarget(CalSpeed, CalSpeed, CalSpeed * TrimIntensity, CalSpeed * TrimIntensity);			
+	if (newdir2 == dirLeft) SetTarget(CalSpeed * TrimIntensity, CalSpeed * TrimIntensity, CalSpeed * （2-TrimIntensity）, CalSpeed * （2-TrimIntensity）);			
+	if (newdir2 == dirRight) SetTarget(CalSpeed * （2-TrimIntensity）, CalSpeed * （2-TrimIntensity）, CalSpeed * TrimIntensity, CalSpeed * TrimIntensity);			
 	}
       if(newdir1==dirBack)
 	{
 	BackMove();	
-	if (newdir2 == dirLeft)  SetTarget(CalSpeed, CalSpeed, CalSpeed * TrimIntensity, CalSpeed * TrimIntensity);		
-	if (newdir2 == dirRight)  SetTarget(CalSpeed * TrimIntensity, CalSpeed * TrimIntensity, CalSpeed, CalSpeed);		
+	if (newdir2 == dirLeft)  SetTarget(CalSpeed * （2-TrimIntensity）, CalSpeed * （2-TrimIntensity）, CalSpeed * TrimIntensity, CalSpeed * TrimIntensity);		
+	if (newdir2 == dirRight)  SetTarget(CalSpeed * TrimIntensity, CalSpeed * TrimIntensity, CalSpeed * （2-TrimIntensity）, CalSpeed * （2-TrimIntensity）);		
 	}
      if(newdir1==dirRight)
 	{
 	RightMove();	
-	if (newdir2 == dirLeft) SetTarget(CalSpeed * TrimIntensity, CalSpeed , CalSpeed* TrimIntensity, CalSpeed);			
-	if (newdir2 == dirRight) SetTarget(CalSpeed, CalSpeed * TrimIntensity, CalSpeed, CalSpeed * TrimIntensity);			
+	if (newdir2 == dirLeft) SetTarget(CalSpeed * TrimIntensity, CalSpeed * （2-TrimIntensity） , CalSpeed* TrimIntensity, CalSpeed * （2-TrimIntensity）);			
+	if (newdir2 == dirRight) SetTarget(CalSpeed * （2-TrimIntensity）, CalSpeed * TrimIntensity, CalSpeed * （2-TrimIntensity）, CalSpeed * TrimIntensity);			
 	}
      if(newdir1==dirLeft)
 	{
 	LeftMove();	
-	if (newdir2 == dirLeft) SetTarget(CalSpeed, CalSpeed * TrimIntensity, CalSpeed, CalSpeed * TrimIntensity);				
-	if (newdir2 == dirRight) SetTarget(CalSpeed * TrimIntensity, CalSpeed , CalSpeed* TrimIntensity, CalSpeed);		
+	if (newdir2 == dirLeft) SetTarget(CalSpeed * （2-TrimIntensity）, CalSpeed * TrimIntensity, CalSpeed * （2-TrimIntensity）, CalSpeed * TrimIntensity);				
+	if (newdir2 == dirRight) SetTarget(CalSpeed * TrimIntensity, CalSpeed * （2-TrimIntensity） , CalSpeed* TrimIntensity, CalSpeed * （2-TrimIntensity）);		
 	}
 }
 
